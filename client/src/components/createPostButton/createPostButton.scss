@@ -1,0 +1,17 @@
+.modal-content-wrapper {
+    justify-content: center;
+    display: flex;
+
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        align-items: center;
+        justify-content: center;
+
+        .input {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+    }
+}
