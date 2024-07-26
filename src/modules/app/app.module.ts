@@ -9,6 +9,7 @@ import { ConfigService } from "../config/config.service";
 import { AuthModule } from "../auth/auth.module";
 import { ProfileModule } from "../profile/profile.module";
 import { WinstonModule } from "../winston/winston.module";
+import { PostModule } from "modules/post/post.module";
 import { AccessControlModule } from "nest-access-control";
 import { roles } from "./app.roles";
 
@@ -66,6 +67,7 @@ import { roles } from "./app.roles";
     ConfigModule,
     AuthModule,
     ProfileModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

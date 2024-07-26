@@ -1,0 +1,61 @@
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Req,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { PostService, IGenericMessageBody } from "./post.service";
+import { PostPostPayload } from "./payload/post.post.payload";
+import { IPost } from "./post.model";
+
+
+/**
+ * Profile Controller
+ */
+@ApiBearerAuth()
+@ApiTags("post")
+@Controller("api/post")
+export class PostController {
+  constructor(private readonly postService: PostService) {}
+
+
+  @UseGuards(AuthGuard("jwt"))
+  @Get()
+  @ApiResponse({ status: 200, description: "Fetch Post Request Received" })
+  @ApiResponse({ status: 400, description: "Fetch Post Request Failed" })
+  async getAllPosts(): Promise<Array<IPost>> {
+    const posts = await this.postService.getAll();
+    return posts;
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Get(":id")
+  @ApiResponse({ status: 200, description: "Fetch Post Request Received" })
+  @ApiResponse({ status: 400, description: "Fetch Post Request Failed" })
+  async getPost(@Param("id") id: string): Promise<IPost> {
+    const post = await this.postService.get(id);
+    return post;
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Post()
+  @ApiResponse({ status: 200, description: "Create Post Request Received" })
+  @ApiResponse({ status: 400, description: "Create Post Request Failed" })
+  async createPost(@Req() req, @Body() payload: PostPostPayload): Promise<IPost> {
+    try {
+      const uid = req.user.id;
+      const post = await this.postService.create(payload, uid);
+      return post;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+}
