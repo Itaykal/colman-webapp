@@ -1,7 +1,9 @@
+@import './styles/variables.scss';
+
 :root {
   letter-spacing: 0.5px;
   color-scheme: light dark;
-  background-color: "#242424";
+  background-color: $darkBg;
   color: white;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -10,7 +12,6 @@
 }
 
 * {
-  background-color: "#242424";
   
   font-weight: 400;
   font-style: normal;

@@ -1,0 +1,26 @@
+@import './variables.scss';
+
+.login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+
+    .login-modal {
+        min-height: 70vh;
+        width: 25vw;
+        background-color: $brightBg;
+        text-align: center;
+        align-items: center;
+        padding: 10px;
+        .upload-button {
+            color: black;
+        }
+        .buttons-row {
+            justify-content: space-around;
+        }
+        .links-row {
+            justify-content: space-between;
+        }
+    }
+}

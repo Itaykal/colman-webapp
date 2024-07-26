@@ -22,7 +22,7 @@ const items: MenuItem[] = [
 ];
 
 
-export default function Root() {
+export default function AppRoot() {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -44,7 +44,6 @@ export default function Root() {
   return (
 
     <Layout hasSider>
-
       <Sider
       style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }}>
         <Menu
@@ -55,8 +54,8 @@ export default function Root() {
           style={{ height: '100%' }}
         />
       </Sider>
-      <Layout  style={{ marginLeft: 200, color: "white", backgroundColor: "#242424", minHeight: '100vh' }}>
-        <Content  style={{ margin: '24px 16px 0', overflow: 'initial', color: "white", backgroundColor: "#242424"}}>
+      <Layout  style={{ marginLeft: 200, minHeight: '100vh' }}>
+        <Content  style={{ margin: '24px 16px 0', overflow: 'initial'}}>
           <Outlet></Outlet>
         </Content>
       </Layout>
