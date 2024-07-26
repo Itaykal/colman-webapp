@@ -23,14 +23,10 @@ import {
   ApiConsumes,
 } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Express } from "express";
 import { PostService, IGenericMessageBody } from "./post.service";
 import { PostPostPayload } from "./payload/post.post.payload";
 import { IPost } from "./post.model";
 
-/**
- * Profile Controller
- */
 @ApiBearerAuth()
 @ApiTags("post")
 @Controller("api/post")
@@ -53,6 +49,15 @@ export class PostController {
   async getPost(@Param("id") id: string): Promise<IPost> {
     const post = await this.postService.get(id);
     return post;
+  }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Get("user/:id")
+  @ApiResponse({ status: 200, description: "Fetch Post Request Received" })
+  @ApiResponse({ status: 400, description: "Fetch Post Request Failed" })
+  async getPostsByUser(@Param("id") id: string): Promise<Array<IPost>> {
+    const posts = await this.postService.getByUser(id);
+    return posts;
   }
 
   @UseGuards(AuthGuard("jwt"))

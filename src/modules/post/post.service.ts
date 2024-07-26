@@ -32,6 +32,10 @@ export class PostService {
     return this.postmodel.find().exec();
   }
 
+  getByUser(id: string): Promise<Array<IPost>> {
+    return this.postmodel.find({ authorID: id }).exec();
+  }
+
   async create(payload: PostPostPayload, uid: string): Promise<IPost> {
     const createdPost = new this.postmodel({
       ...payload,
