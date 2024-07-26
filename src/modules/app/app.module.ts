@@ -12,10 +12,18 @@ import { WinstonModule } from "../winston/winston.module";
 import { PostModule } from "modules/post/post.module";
 import { BreedModule } from "modules/breed/breed.module";
 import { AccessControlModule } from "nest-access-control";
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { roles } from "./app.roles";
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', '..', 'public'),
+      serveStaticOptions: { index: false },
+      serveRoot: '/public',
+      renderPath: "public",
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
