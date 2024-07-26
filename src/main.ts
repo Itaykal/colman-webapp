@@ -3,7 +3,7 @@ import { AppModule } from './modules/app/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as morgan from 'morgan';
-
+import { join } from 'path';
 
 export const SWAGGER_API_ROOT = 'api/docs';
 export const SWAGGER_API_NAME = 'API';
@@ -22,7 +22,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup(SWAGGER_API_ROOT, app, document);
   app.enableCors();
-
   app.use(morgan('combined'));
 
   await app.listen(9000);
