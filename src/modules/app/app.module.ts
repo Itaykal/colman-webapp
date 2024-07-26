@@ -10,6 +10,7 @@ import { AuthModule } from "../auth/auth.module";
 import { ProfileModule } from "../profile/profile.module";
 import { WinstonModule } from "../winston/winston.module";
 import { PostModule } from "modules/post/post.module";
+import { BreedModule } from "modules/breed/breed.module";
 import { AccessControlModule } from "nest-access-control";
 import { roles } from "./app.roles";
 
@@ -68,6 +69,7 @@ import { roles } from "./app.roles";
     AuthModule,
     ProfileModule,
     PostModule,
+    BreedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
