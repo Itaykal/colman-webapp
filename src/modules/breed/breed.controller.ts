@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  UseGuards,
   Query,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";

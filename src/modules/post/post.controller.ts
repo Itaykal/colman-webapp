@@ -9,13 +9,24 @@ import {
   Req,
   Post,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from "@nestjs/common";
+import { extname } from "path";
+import * as multer from "multer";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiResponse,
+  ApiTags,
+  ApiConsumes,
+} from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Express } from "express";
 import { PostService, IGenericMessageBody } from "./post.service";
 import { PostPostPayload } from "./payload/post.post.payload";
 import { IPost } from "./post.model";
-
 
 /**
  * Profile Controller
@@ -25,7 +36,6 @@ import { IPost } from "./post.model";
 @Controller("api/post")
 export class PostController {
   constructor(private readonly postService: PostService) {}
-
 
   @UseGuards(AuthGuard("jwt"))
   @Get()
@@ -49,7 +59,10 @@ export class PostController {
   @Post()
   @ApiResponse({ status: 200, description: "Create Post Request Received" })
   @ApiResponse({ status: 400, description: "Create Post Request Failed" })
-  async createPost(@Req() req, @Body() payload: PostPostPayload): Promise<IPost> {
+  async createPost(
+    @Req() req,
+    @Body() payload: PostPostPayload,
+  ): Promise<IPost> {
     try {
       const uid = req.user.id;
       const post = await this.postService.create(payload, uid);
@@ -57,5 +70,37 @@ export class PostController {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
+  }
+
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+      schema: {
+        type: 'object',
+        properties: {
+          file: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    }
+  )
+  @UseInterceptors(FileInterceptor("file",
+    {
+      storage: multer.diskStorage({
+        destination: './public',
+        filename: (req, file, cb) => {
+          const filename = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join("");
+          cb(null, filename + extname(file.originalname));
+        },
+      }),
+    }
+  ))
+  @Post("/upload-file")
+  async uploadFile(@Req() req): Promise<string> {
+    return req.file.filename;
   }
 }

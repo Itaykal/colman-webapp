@@ -3,7 +3,7 @@ import * as rotateFile from "winston-daily-rotate-file";
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { MongooseModule, MongooseModuleAsyncOptions } from "@nestjs/mongoose";
+import { MongooseModule, MongooseModuleAsyncOptions, MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 import { ConfigModule } from "../config/config.module";
 import { ConfigService } from "../config/config.service";
 import { AuthModule } from "../auth/auth.module";
@@ -19,12 +19,12 @@ import { roles } from "./app.roles";
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) =>
+      useFactory: async (configService: ConfigService) =>
         ({
           uri: configService.get("DB_URL"),
           useNewUrlParser: true,
           useUnifiedTopology: true,
-        } as MongooseModuleAsyncOptions),
+        } as MongooseModuleFactoryOptions),
     }),
     WinstonModule.forRootAsync({
       imports: [ConfigModule],
