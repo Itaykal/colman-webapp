@@ -33,11 +33,9 @@ export class PostService {
   }
 
   async create(payload: PostPostPayload, uid: string): Promise<IPost> {
-    if (!payload.body || !payload.imagePath) { 
-      throw new BadRequestException("Missing required fields");
-    }
     const createdPost = new this.postmodel({
       ...payload,
+      imagePath: "",
       authorID: uid,
       date: new Date(),
       likes: 0,
