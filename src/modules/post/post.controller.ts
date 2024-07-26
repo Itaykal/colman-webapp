@@ -62,7 +62,6 @@ export class PostController {
   async createPost(
     @Req() req,
     @Body() payload: PostPostPayload,
-    @UploadedFile() file,
   ): Promise<IPost> {
     try {
       const uid = req.user.id;
