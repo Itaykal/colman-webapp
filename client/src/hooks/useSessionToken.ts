@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import apiClient from "../services/apiClient";
 import { jwtDecode } from "jwt-decode";
 import User from "../models/user";
 
 export interface Token {
     token: string,
-    refreshToken: string
+    refreshToken: string,
+    expires: number
 }
 
 export interface JwtPayload extends User {
@@ -29,6 +30,8 @@ const deleteSessionToken = () => {
     sessionStorage.removeItem('token');
 }
 
+let timeout: ReturnType<typeof setTimeout> | null;
+
 const useSessionToken = () => {
     const [token, setToken_] = useState<Token | null>(() => {
         const initialValue = getSessionToken();
@@ -36,8 +39,12 @@ const useSessionToken = () => {
     });
 
     const setToken = (value: Token | null) => {
+        if (timeout) {
+            clearTimeout(timeout)
+        }
         setToken_(value)
         if (value) {
+            timeout = setTimeout(()=>{}, value.expires)
             apiClient.defaults.headers.common["Authorization"] = "Bearer " + value.token;
             setSessionToken(value)
         } else {

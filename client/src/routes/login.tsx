@@ -27,7 +27,7 @@ export default function LoginPage() {
     const token = await userService.login(username, password)
     setToken(token)
   }
-  const handleKeyDown = async (event: any) => {
+  const handleKeyDown = async (event) => {
     if (event.key === 'Enter') {
       await login()
     }

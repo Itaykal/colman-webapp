@@ -39,7 +39,7 @@ export default function Profile() {
               `https://robohash.org/${user.username}.png?size=200x200`}></img>}
           >
             <Meta
-              title={`${user.email}`}
+              title={<>{user.email}</>}
               description={<a
                 target="_blank"
                 href={`https://twitter.com/${user.username}`}

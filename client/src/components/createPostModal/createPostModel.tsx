@@ -1,4 +1,4 @@
-import { GetProp, Input, UploadProps, Modal, Select, SelectProps } from "antd";
+import { Input, Modal, Select, SelectProps } from "antd";
 import { useEffect, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
 import * as breedService from "../../services/breedService"

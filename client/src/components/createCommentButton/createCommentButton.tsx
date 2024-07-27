@@ -1,20 +1,19 @@
 import { FloatButton } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import CreatePostModal from "../createPostModal/createPostModel";
+import CreateCommentModal from "../createCommentModal/createCommentModel";
 import * as postsService from "../../services/postsService"
 
-File
-export default function CreatePostButton({ refreshPosts }: { refreshPosts: () => void}) {
+export default function CreateCommentButton({ postId, refreshComments }: { postId: string, refreshComments: () => void}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
         setIsModalOpen(true);
     };
 
-    const handleOk = async (file: File, title: string, body: string, dogBreedID: string) => {
-        await postsService.createPost(file, title, body, dogBreedID);
-        refreshPosts()
+    const handleOk = async (body: string) => {
+        await postsService.createComment(postId, body);
+        refreshComments()
         setIsModalOpen(false);
     };
 
@@ -25,7 +24,7 @@ export default function CreatePostButton({ refreshPosts }: { refreshPosts: () =>
     return (
         <>
             <FloatButton icon={<PlusOutlined />} onClick={showModal} />
-            <CreatePostModal handleCancel={handleCancel} handleOk={handleOk} isModalOpen={isModalOpen} />
+            <CreateCommentModal handleCancel={handleCancel} handleOk={handleOk} isModalOpen={isModalOpen} />
         </>
     )
 }

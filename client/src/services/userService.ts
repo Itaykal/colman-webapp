@@ -1,4 +1,3 @@
-import { GetProp, UploadProps } from "antd";
 import { Token } from "../hooks/useSessionToken";
 import User from "../models/user";
 import apiClient from "./apiClient";

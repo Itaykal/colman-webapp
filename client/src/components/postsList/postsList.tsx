@@ -1,4 +1,4 @@
-import { Empty, Typography } from "antd"
+import { Empty } from "antd"
 import PostModel from "../../models/post"
 import Post from "../post/post"
 import "./postsList.scss"
