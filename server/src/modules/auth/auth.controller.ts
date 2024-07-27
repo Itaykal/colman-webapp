@@ -110,11 +110,11 @@ export class AuthController {
   // }
 
   @Post("google")
-  async googleAuth(@Body() token: GoogleAuthPayload) {
+  async googleAuth(@Body() payload: GoogleAuthPayload) {
     var accessToken = null;
 
     const ticket = await this.client.verifyIdToken({
-      idToken: token.token,
+      idToken: payload.credential,
       audience: this.configService.get("GOOGLE_CLIENT_ID"),
     });
     const googleUser = ticket.getPayload();

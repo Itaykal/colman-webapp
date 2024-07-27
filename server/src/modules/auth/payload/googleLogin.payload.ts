@@ -4,7 +4,7 @@ import { IsNotEmpty } from "class-validator";
 export class GoogleAuthPayload {
     @ApiProperty({required: true})
     @IsNotEmpty()
-    token: string;
+    credential: string;
   }
   
   
