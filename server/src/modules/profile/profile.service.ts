@@ -8,7 +8,7 @@ import {
   NotAcceptableException,
 } from "@nestjs/common";
 import { IProfile } from "./profile.model";
-import { RegisterPayload } from "modules/auth/payload/register.payload";
+import { RegisterPayload } from "../auth/payload/register.payload";
 import { AppRoles } from "../app/app.roles";
 import { PatchProfilePayload } from "./payload/patch.profile.payload";
 import { CustomError } from 'ts-custom-error'

@@ -64,24 +64,4 @@ export class ProfileController {
   async patchProfile(@Body() payload: PatchProfilePayload) {
     return await this.profileService.edit(payload);
   }
-
-  /**
-   * Removes a profile from the database
-   * @param {string} username the username to remove
-   * @returns {Promise<IGenericMessageBody>} whether or not the profile has been deleted
-   */
-  @Delete(":username")
-  @UseGuards(AuthGuard("jwt"), ACGuard)
-  @UseRoles({
-    resource: "profiles",
-    action: "delete",
-    possession: "any",
-  })
-  @ApiResponse({ status: 200, description: "Delete Profile Request Received" })
-  @ApiResponse({ status: 400, description: "Delete Profile Request Failed" })
-  async delete(
-    @Param("username") username: string,
-  ): Promise<IGenericMessageBody> {
-    return await this.profileService.delete(username);
-  }
 }

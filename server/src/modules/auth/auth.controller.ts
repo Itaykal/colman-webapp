@@ -7,7 +7,7 @@ import { RefreshTokenPayload } from "./payload/refresh.payload";
 import { RegisterPayload } from "./payload/register.payload";
 import { ProfileService } from "../profile/profile.service";
 import { v4 as uuidv4 } from "uuid";
-import { ConfigService } from "modules/config/config.service";
+import { ConfigService } from "../config/config.service";
 import { UserAlreadyExists } from "../profile/profile.service";
 import axios from "axios";
 import * as fs from "fs";

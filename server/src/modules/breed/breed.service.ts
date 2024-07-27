@@ -5,7 +5,6 @@ import {
   Injectable,
 } from "@nestjs/common";
 import { IBreed } from "./breed.model";
-import { PostPostPayload } from "modules/post/payload/post.post.payload";
 
 
 export interface IGenericMessageBody {

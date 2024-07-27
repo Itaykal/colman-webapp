@@ -34,14 +34,12 @@ export class PatchProfilePayload {
    */
   @ApiProperty()
   @Matches(/^[a-zA-Z ]+$/)
-  @IsNotEmpty()
   name: string;
 
   /**
    * Password field
    */
   @ApiProperty()
-  @IsNotEmpty()
   @MinLength(8)
   password: string;
 

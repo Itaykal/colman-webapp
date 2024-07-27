@@ -3,6 +3,7 @@ import { Test } from "@nestjs/testing";
 import { expect } from "chai";
 import { WINSTON_MODULE_PROVIDER } from "./winston.constants";
 import { WinstonModule } from "./winston.module";
+import { describe, it } from "@jest/globals";
 
 describe("Winston Module", () => {
   it("boots successfully", async () => {

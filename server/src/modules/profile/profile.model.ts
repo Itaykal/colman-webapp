@@ -1,5 +1,5 @@
-import { Schema, Document } from "mongoose";
-import { AppRoles } from "modules/app/app.roles";
+import mongoose, { Schema, Document } from "mongoose";
+import { AppRoles } from "../app/app.roles";
 
 /**
  * Mongoose Profile Schema

@@ -6,7 +6,7 @@ import {
   NotAcceptableException,
 } from "@nestjs/common";
 import { IPost } from "./post.model";
-import { PostPostPayload } from "modules/post/payload/post.post.payload";
+import { PostPostPayload } from "../post/payload/post.post.payload";
 
 
 export interface IGenericMessageBody {

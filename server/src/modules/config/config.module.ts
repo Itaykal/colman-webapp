@@ -1,11 +1,13 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "./config.service";
 
+process.env.TEST
+
 @Module({
   providers: [
     {
       provide: ConfigService,
-      useValue: new ConfigService(".env"),
+      useValue: process.env.TEST === "1" ? new ConfigService(".env.test"): new ConfigService(".env"),
     },
   ],
   exports: [ConfigService],
