@@ -1822,7 +1822,7 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@28.1.8":
+"@types/jest@^28.1.8":
   version "28.1.8"
   resolved "https://registry.npmjs.org/@types/jest/-/jest-28.1.8.tgz"
   integrity sha512-8TJkV++s7B6XqnDrzR1m/TT0A0h948Pnl/097veySPN67VRAgQ4gZ7n2KfJo2rVq6njQjdxU3GCCyDvAeuHoiw==
