@@ -2,14 +2,14 @@ import { List } from "antd";
 import CommentModel from "../../models/comment"
 import Comment from "../comment/comment"
 
-export default function CommentsList({ comments, }: { comments: CommentModel[], }) {
+export default function CommentsList({ comments, refreshComments}: { comments: CommentModel[], refreshComments: () => void}) {
     return (
         <List
             className='comments-list'
             itemLayout="horizontal"
             dataSource={comments}
             renderItem={(item) => (
-                <Comment comment={item}></Comment>
+                <Comment refreshComments={refreshComments} comment={item}></Comment>
             )}
         >
 

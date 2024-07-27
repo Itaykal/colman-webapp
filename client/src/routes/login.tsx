@@ -1,4 +1,4 @@
-import { useGoogleLogin } from '@react-oauth/google';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { Button, Input, Row, Space, Image } from 'antd';
 import '../styles/login.scss'
 import DoggoLogo from '../assets/doggo.jpg'
@@ -8,9 +8,7 @@ import useSessionToken from '../hooks/useSessionToken';
 import * as userService from '../services/userService'
 
 export default function LoginPage() {
-  const loginWithGoogle = useGoogleLogin({
-    redirect_uri: "/api/auth/google/redirect",
-  });
+
   const navigate = useNavigate()
 
   const { setToken, token } = useSessionToken()
@@ -24,14 +22,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState<string>("")
 
   const login = async () => {
-    const token = await userService.login(username, password)
-    setToken(token)
+    const newtoken = await userService.login(username, password)
+    setToken(newtoken)
   }
-  const handleKeyDown = async (event) => {
+  const handleKeyDown = async (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       await login()
     }
   }
+  const googleSuccess = async (creadentialResponse: CredentialResponse) => {
+    const newToken = await userService.googleSignin(creadentialResponse)
+    setToken(newToken)
+  }
+
   return (
     <div className='login-wrapper'>
       <div className='login-modal'>
@@ -40,12 +43,12 @@ export default function LoginPage() {
           <Input placeholder='username' onChange={e => { setUsername(e.target.value) }} onKeyDown={handleKeyDown} />
           <Input placeholder='password' type='password' onChange={e => { setPassword(e.target.value) }} onKeyDown={handleKeyDown}/>
           <Row className='buttons-row'>
-            <Button onClick={() => loginWithGoogle()}>Sign in with Google 🚀</Button>;
+            <GoogleLogin onSuccess={googleSuccess}></GoogleLogin>;
             <Button onClick={() => login()}>Sign in</Button>;
           </Row>
           <Row className='links-row'>
-            <Link to="/register">register</Link>
-            <Link to="/forgot-password">forgot-password</Link>
+            <Link to="/register">Don't have an account?</Link>
+            {/* <Link to="/forgot-password">forgot-password</Link> */}
           </Row>
         </Space>
       </div>

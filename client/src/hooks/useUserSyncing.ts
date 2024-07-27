@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import User from "../models/user";
 import useSessionToken from "./useSessionToken";
+import * as userService from "../services/userService"
 
 const useUserSyncing = () => {
     const { decodedToken, setToken } = useSessionToken();
@@ -8,7 +9,8 @@ const useUserSyncing = () => {
 
     const fetchUser = useCallback(async () => {
         if (!decodedToken) return;
-        setUser(decodedToken)
+        const user = await userService.getUser(decodedToken._id)
+        setUser(user)
     }, [decodedToken])
 
     const logout = () => {

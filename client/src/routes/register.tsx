@@ -1,4 +1,4 @@
-import { useGoogleLogin } from '@react-oauth/google';
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { Button, Input, Row, Space, Image } from 'antd';
 import '../styles/login.scss'
 import DoggoLogo from '../assets/doggo.jpg'
@@ -10,9 +10,6 @@ import * as userService from "../services/userService"
 
 File
 export default function RegisterPage() {
-  const loginWithGoogle = useGoogleLogin({
-    redirect_uri: "/api/auth/google/redirect"
-  });
   const [profilePicture, setProfilePicture] = useState<File>()
   const [username, setUsername] = useState<string>("")
   const [password, setPassword] = useState<string>("")
@@ -31,6 +28,10 @@ export default function RegisterPage() {
     setToken(newToken)
   }
 
+  const googleSuccess = async (creadentialResponse: CredentialResponse) => {
+    const newToken = await userService.googleSignin(creadentialResponse)
+    setToken(newToken)
+  }
 
   return (
     <div className='login-wrapper'>
@@ -46,12 +47,12 @@ export default function RegisterPage() {
             onSelect={e => { setProfilePicture(e) }}
           ></UploadImage>
           <Row className='buttons-row'>
-            <Button onClick={() => loginWithGoogle()}>Sign in with Google 🚀</Button>;
+            <GoogleLogin onSuccess={googleSuccess}></GoogleLogin>;
             <Button disabled={email.length == 0 || username.length == 0 || password.length == 0 || !profilePicture} onClick={() => register()}>Register</Button>;
           </Row>
           <Row className='links-row'>
-            <Link to="/login">login</Link>
-            <Link to="/forgot-password">forgot-password</Link>
+            <Link to="/login">Already have an account?</Link>
+            {/* <Link to="/forgot-password">forgot-password</Link> */}
           </Row>
         </Space>
       </div>

@@ -11,9 +11,6 @@ import Profile from "./routes/profile";
 import Home from "./routes/home";
 import BreedPage from "./routes/breed-page";
 import { ConfigProvider as AntdConfigProvider } from "antd";
-import { loader as breedLoader } from "./loaders/breed"
-import { loader as profileLoader } from "./loaders/profile"
-import { loader as postLoader } from "./loaders/post"
 import LoginPage from "./routes/login";
 import RegisterPage from "./routes/register";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -42,17 +39,14 @@ const router = createBrowserRouter([
       {
         path: "profile/:userId",
         element: <Profile />,
-        loader: profileLoader,
       },
       {
         path: "post/:postId",
         element: <PostPage />,
-        loader: postLoader,
       },
       {
         path: "breed/:breedId",
         element: <BreedPage />,
-        loader: breedLoader,
       }
     ],
   },

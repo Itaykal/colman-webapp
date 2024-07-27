@@ -20,7 +20,7 @@ export default function Home() {
     return (
         <> {posts === null ? (<Spin />) :
             <div className="home">
-                <PostsList posts={posts} />
+                <PostsList refreshPosts={fetchPosts} posts={posts} />
                 <CreatePostButton refreshPosts={fetchPosts}/>
             </div>
         }

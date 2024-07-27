@@ -6,6 +6,7 @@ import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import useSessionToken from '../hooks/useSessionToken';
 import useUserSyncing from '../hooks/useUserSyncing';
+import { googleLogout } from '@react-oauth/google';
 
 type MenuItem = {
   label: React.ReactNode,
@@ -20,16 +21,17 @@ export default function AppRoot() {
 
   const { token } = useSessionToken()
   const logoutNavigate = () => {
+    googleLogout();
     logout()
     navigate("/login")
   }
 
   useEffect(() => {
-    if ( !token ) {
+    if (!token) {
       navigate("/login")
     }
   }, [token])
-  
+
 
   const items: MenuItem[] = useMemo(() => [
     {
