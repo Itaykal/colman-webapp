@@ -17,9 +17,8 @@ import { ProfileService, IGenericMessageBody } from "./profile.service";
 import { EditProfilePayload } from "./payload/edit.profile.payload";
 import { IProfile } from "./profile.model";
 import { FileInterceptor } from "@nestjs/platform-express";
-import multer from "multer";
+import * as multer from "multer";
 import { extname } from "path";
-
 
 @ApiBearerAuth()
 @ApiTags("profile")
@@ -46,7 +45,7 @@ export class ProfileController {
    * @param {RegisterPayload} payload
    * @returns {Promise<IProfile>} mutated profile data
    */
-  @Post(":username/edit")
+  @Post("edit")
   @UseGuards(AuthGuard("jwt"))
   @UseRoles({
     resource: "profiles",
@@ -55,14 +54,19 @@ export class ProfileController {
   })
   @ApiResponse({ status: 200, description: "Patch Profile Request Received" })
   @ApiResponse({ status: 400, description: "Patch Profile Request Failed" })
-  async patchProfile(@Body() payload: EditProfilePayload, @Param("userId") userId: string) {
-    return await this.profileService.edit(payload, userId);
+  async patchProfile(
+    @Body() payload: EditProfilePayload,
+    @Param("userId") userId: string,
+    @Req() req,
+  ) {
+    const uid = req.user.id;
+    return await this.profileService.edit(payload, uid);
   }
 
-  @UseInterceptors(FileInterceptor("file",
-    {
+  @UseInterceptors(
+    FileInterceptor("file", {
       storage: multer.diskStorage({
-        destination: './public/avatar',
+        destination: "./public/avatar",
         filename: (req, file, cb) => {
           const filename = Array(32)
             .fill(null)
@@ -71,8 +75,8 @@ export class ProfileController {
           cb(null, filename + extname(file.originalname));
         },
       }),
-    }
-  ))
+    }),
+  )
   @Post("/upload-file")
   async uploadFile(@Req() req): Promise<string> {
     return req.file.filename;

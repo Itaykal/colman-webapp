@@ -116,8 +116,16 @@ export class PostController {
   async editPost(
     @Param("postId") postId: string,
     @Body() payload: EditPostPayload,
+    @Req() req,
   ): Promise<IPost> {
     try {
+      const originalPost = await this.postService.get(postId);
+      if (!originalPost) {
+        throw new BadRequestException("Post not found");
+      }
+      if (originalPost.authorID !== req.user._id) {
+        throw new BadRequestException("You are not the author of this post");
+      }
       const post = await this.postService.edit(payload, postId);
       return post;
     } catch (error) {

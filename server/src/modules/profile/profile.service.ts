@@ -124,6 +124,12 @@ export class ProfileService {
    * @returns {Promise<IProfile>} mutated profile data
    */
   async edit(payload: EditProfilePayload, uid: string): Promise<IProfile> {
+    const doesUserAlreadyExist = await this.getByUsername(payload.username);
+    if (doesUserAlreadyExist) {
+      throw new NotAcceptableException(
+        "The account with the provided username currently exists. Please choose another one.",
+      );
+    }
     const updatedProfile = await this.profileModel.findOneAndUpdate({ _id: uid }, payload, {
       new: true,
     }).exec();
