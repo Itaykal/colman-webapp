@@ -7,7 +7,6 @@ import { ProfileModule } from "../profile/profile.module";
 import { AuthService } from "./auth.service";
 import { JwtStrategy } from "./jwt.strategy";
 import { AuthController } from "./auth.controller";
-import { GoogleStrategy } from "./google.strategy";
 
 @Module({
   imports: [
@@ -52,7 +51,7 @@ import { GoogleStrategy } from "./google.strategy";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy],
   exports: [PassportModule.register({ defaultStrategy: "jwt" })],
 })
 export class AuthModule {}
