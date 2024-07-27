@@ -1,0 +1,20 @@
+@import "../styles/variables.scss";
+
+.post-page {
+    display: flex;
+    flex-direction: column;
+
+    .post {
+        position: fixed;
+        width: 20%;
+    }
+    .comments-wrapper {
+        width: 70%;
+        align-self: flex-end;
+        .comments-list {
+            width: 50%;
+            align-self: center;
+        }
+    }
+   
+}

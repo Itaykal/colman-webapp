@@ -1,28 +1,31 @@
-import { CredentialResponse, useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { Button, Input, Row, Space, Image } from 'antd';
 import '../styles/login.scss'
 import DoggoLogo from '../assets/doggo.jpg'
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-
-const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
-  console.log(credentialResponse)
-  try {
-    const res = await googleSignin(credentialResponse)
-    console.log(res)
-  } catch (e) {
-    console.log(e)
-  }
-}
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import useSessionToken from '../hooks/useSessionToken';
 
 export default function LoginPage() {
   const loginWithGoogle = useGoogleLogin({
-    onSuccess: tokenResponse => console.log(tokenResponse),
+    redirect_uri: "/api/auth/google/redirect",
   });
+  const navigate = useNavigate()
+
+  const { setToken, token } = useSessionToken()
+  useEffect(() => {
+    if (token) {
+      navigate("/")
+    }
+  })
 
   const [username, setUsername] = useState<string>()
   const [password, setPassword] = useState<string>()
   const login = () => {
+    setToken({
+      accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmEzOWI1NWM4MjgyZTY0ZWRiMWYzZjEiLCJ1c2VybmFtZSI6IkthbGZvbktpbmciLCJlbWFpbCI6Iml5a2FsZm9uQGdtYWlsLmNvbSIsImF2YXRhciI6Imh0dHA6Ly93d3cuZ3JhdmF0YXIuY29tL2F2YXRhci9iNDAzYzBjOTAwMTNlY2EyNWU5NjZkNDM3ZDM4NmJiNj9zPTIwMCZyPXBnJmQ9NDA0IiwiaWF0IjoxNzIyMDgzMzEzLCJleHAiOjE3MjIwODUxMTN9.bfnht4eea4pb13hIOAQRUYN2NsbSnRVgoOy5Hdu7Opc",
+      refreshToken: ""
+    })
     console.log(username, password)
   }
 

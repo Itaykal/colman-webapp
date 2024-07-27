@@ -10,12 +10,14 @@ import ErrorPage from "./routes/error-page";
 import Profile from "./routes/profile";
 import Home from "./routes/home";
 import BreedPage from "./routes/breed-page";
-import { ConfigProvider } from "antd";
+import { ConfigProvider as AntdConfigProvider } from "antd";
 import { loader as breedLoader } from "./loaders/breed"
 import { loader as profileLoader } from "./loaders/profile"
+import { loader as postLoader } from "./loaders/post"
 import LoginPage from "./routes/login";
 import RegisterPage from "./routes/register";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import PostPage from "./routes/post-page";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +45,11 @@ const router = createBrowserRouter([
         loader: profileLoader,
       },
       {
+        path: "post/:postId",
+        element: <PostPage />,
+        loader: postLoader,
+      },
+      {
         path: "breed/:breedId",
         element: <BreedPage />,
         loader: breedLoader,
@@ -53,7 +60,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as ReactDOM.Container).render(
   <GoogleOAuthProvider clientId="511357191065-161sifh64nai3q04va24pqne716c95ml.apps.googleusercontent.com">
-    <ConfigProvider
+    <AntdConfigProvider
       theme={{
         token: {
           colorBgContainer: "#fdf9e3",
@@ -74,13 +81,16 @@ ReactDOM.createRoot(document.getElementById("root") as ReactDOM.Container).rende
             bodyBg: '#242424',
             colorText: 'white'
           },
+          List: {
+            colorText: 'white'
+          },
         },
       }}
     >
       <React.StrictMode>
         <RouterProvider router={router} />
       </React.StrictMode>
-    </ConfigProvider>
+    </AntdConfigProvider>
   </GoogleOAuthProvider>
 
 );

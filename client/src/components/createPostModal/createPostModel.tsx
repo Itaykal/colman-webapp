@@ -59,7 +59,7 @@ export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }:
         setDogBreedID(breed?.id || "");
     }
 
-    useEffect(() => { handleSearch("") }, [])
+    useEffect(() => { handleSearch("") })
 
     return (
         <>

@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { GetProp, Upload, UploadFile, UploadProps, Image, Row, Space } from "antd"
+import { GetProp, Upload, UploadProps, Image, Space } from "antd"
 import { useState } from "react";
 import "./uploadImage.scss"
 

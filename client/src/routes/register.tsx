@@ -1,26 +1,17 @@
-import { CredentialResponse, useGoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import { Button, Input, Row, Space, Image, GetProp, UploadProps } from 'antd';
 import '../styles/login.scss'
 import DoggoLogo from '../assets/doggo.jpg'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import UploadImage from '../components/uploadImage/uploadImage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useSessionToken from '../hooks/useSessionToken';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
-  console.log(credentialResponse)
-  try {
-    const res = await googleSignin(credentialResponse)
-    console.log(res)
-  } catch (e) {
-    console.log(e)
-  }
-}
-
 export default function RegisterPage() {
   const loginWithGoogle = useGoogleLogin({
-    onSuccess: tokenResponse => console.log(tokenResponse),
+    redirect_uri: "/api/auth/google/redirect"
   });
   const [profilePicture, setProfilePicture] = useState<FileType>()
   const [username, setUsername] = useState<string>()
@@ -29,6 +20,14 @@ export default function RegisterPage() {
   const register = () => {
     console.log(username, password, profilePicture)
   }
+  const navigate = useNavigate()
+
+  const { token } = useSessionToken()
+  useEffect(() => {
+    if (token) {
+      navigate("/")
+    }
+  })
 
   return (
     <div className='login-wrapper'>

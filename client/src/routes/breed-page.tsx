@@ -1,18 +1,29 @@
 import { useLoaderData } from "react-router-dom";
 import Breed from "../models/breed";
+import { useCallback, useEffect, useState } from "react";
+import * as breedService from "../services/breedService"
+import { Spin } from "antd";
 
 export default function BreedPage() {
-  const { breed } = useLoaderData() as { breed: Breed };
+  const { breedId } = useLoaderData() as { breedId: string };
+  const [breed, setBreed] = useState<Breed>()
 
-  return (
+  const fetchBreed = useCallback(async () => {
+    const newBreed = await breedService.getBreed(breedId)
+    setBreed(newBreed)
+  }, [breedId])
 
-    <div>
-      <h1>
-        {breed.attributes.name}
-      </h1>
+  useEffect(() => { fetchBreed() }, [fetchBreed])
 
-      {breed.attributes.description}
-    </div>
-  );
+  return (<>{
+    !breed ? <Spin /> :
+      <div>
+        <h1>
+          {breed.attributes.name}
+        </h1>
+
+        {breed.attributes.description}
+      </div>
+  }</>);
 }
 
