@@ -1,5 +1,4 @@
 import * as crypto from "crypto";
-import * as gravatar from "gravatar";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import {
@@ -105,13 +104,8 @@ export class ProfileService {
 
     const createdProfile = new this.profileModel({
       ...payload,
+      name: payload.username,
       password: crypto.createHmac("sha256", payload.password).digest("hex"),
-      avatar: gravatar.url(payload.email, {
-        protocol: "http",
-        s: "200",
-        r: "pg",
-        d: "404",
-      }),
       roles: AppRoles.DEFAULT,
     });
 

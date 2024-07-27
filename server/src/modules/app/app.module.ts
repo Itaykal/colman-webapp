@@ -25,6 +25,11 @@ import { join } from 'path';
       serveRoot: '/public',
       renderPath: "public",
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', '..', '..', 'client', 'dist'),
+      serveStaticOptions: { index: false },
+      serveRoot: '/',
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

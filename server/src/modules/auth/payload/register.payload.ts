@@ -31,15 +31,11 @@ export class RegisterPayload {
   @IsNotEmpty()
   username: string;
 
-  /**
-   * Name field
-   */
   @ApiProperty({
-    required: true,
+    required: true
   })
-  @Matches(/^[a-zA-Z ]+$/)
   @IsNotEmpty()
-  name: string;
+  avatar: string;
 
   /**
    * Password field
