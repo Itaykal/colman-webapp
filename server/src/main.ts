@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import AppModule from './modules/app/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import fs from 'fs';
+import * as fs from 'fs';
 import path from 'path';
 import * as morgan from 'morgan';
 
