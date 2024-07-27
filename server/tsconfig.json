@@ -12,7 +12,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./src",
-    "types": ["jest", "node", "mocha"],
+    "types": ["jest", "node"],
   },
   "include": [
     "src/**/*"
