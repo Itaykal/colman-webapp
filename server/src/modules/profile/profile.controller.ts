@@ -56,7 +56,6 @@ export class ProfileController {
   @ApiResponse({ status: 400, description: "Patch Profile Request Failed" })
   async patchProfile(
     @Body() payload: EditProfilePayload,
-    @Param("userId") userId: string,
     @Req() req,
   ) {
     const uid = req.user.id;
