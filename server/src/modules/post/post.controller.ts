@@ -27,6 +27,7 @@ import { PostService, IGenericMessageBody } from "./post.service";
 import { PostPostPayload } from "./payload/post.post.payload";
 import { EditPostPayload } from "./payload/edit.post.payload";
 import { IPost } from "./post.model";
+import { ObjectId } from "mongoose";
 
 @ApiBearerAuth()
 @ApiTags("post")
@@ -125,7 +126,7 @@ export class PostController {
       if (!originalPost) {
         throw new BadRequestException("Post not found");
       }
-      if (originalPost.authorID !== req.user._id) {
+      if (String(originalPost.authorID) !== String(req.user._id)) {
         throw new BadRequestException("You are not the author of this post");
       }
       const post = await this.postService.edit(payload, postId);
