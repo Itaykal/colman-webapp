@@ -5,8 +5,9 @@ import { Schema, Document } from "mongoose";
  */
 export const Post = new Schema({
   authorID: { type: Schema.Types.ObjectId, required: true },
-  imagePath: { type: String, required: true },
+  imageUrl: { type: String, required: true },
   body: { type: String, required: true },
+  breedId: { type: String, required: true },
   comments: { type: Number, default: 0 },
   date: {
     type: Date,
@@ -17,7 +18,8 @@ export const Post = new Schema({
 export interface IPost extends Document {
   readonly _id: Schema.Types.ObjectId;
   readonly authorID: Schema.Types.ObjectId;
-  readonly imagePath: string;
+  readonly imageUrl: string;
+  readonly breedId: string;
   readonly body: string;
   readonly comments: number;
   readonly date: Date;
