@@ -6,6 +6,7 @@ import { AppService } from "./app.service";
 import { MongooseModule, MongooseModuleAsyncOptions, MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 import { ConfigModule } from "../config/config.module";
 import { ConfigService } from "../config/config.service";
+import { CommentModule } from "modules/comment/comment.module";
 import { AuthModule } from "../auth/auth.module";
 import { ProfileModule } from "../profile/profile.module";
 import { WinstonModule } from "../winston/winston.module";
@@ -78,6 +79,7 @@ import { join } from 'path';
     ProfileModule,
     PostModule,
     BreedModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
