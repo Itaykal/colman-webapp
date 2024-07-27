@@ -1,8 +1,9 @@
 import { Controller, Body, Post, Get, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiResponse, ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { AuthService, ITokenReturnBody } from "./auth.service";
 import { LoginPayload } from "./payload/login.payload";
+import { RefreshTokenPayload } from "./payload/refresh.payload";
 import { RegisterPayload } from "./payload/register.payload";
 import { ProfileService } from "../profile/profile.service";
 import { v4 as uuidv4 } from "uuid";
@@ -111,4 +112,10 @@ export class AuthController {
   @Get("google")
   @UseGuards(AuthGuard("google"))
   async googleAuth(@Req() req) {}
+
+  @Post('refresh')
+  @ApiResponse({ status: 201, description: "Token Refreshed" })
+  async refresh(@Body() payload: RefreshTokenPayload) {
+    return this.authService.refreshToken(payload);
+  }
 }

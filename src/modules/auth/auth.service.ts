@@ -4,6 +4,7 @@ import { ConfigService } from "../config/config.service";
 import { ProfileService } from "../profile/profile.service";
 import { IProfile } from "../profile/profile.model";
 import { LoginPayload } from "./payload/login.payload";
+import { RefreshTokenPayload } from "./payload/refresh.payload";
 
 /**
  * Models a typical Login/Register route return body
@@ -21,6 +22,8 @@ export interface ITokenReturnBody {
    * The Bearer token
    */
   token: string;
+
+  refreshToken: string
 }
 
 /**
@@ -33,6 +36,7 @@ export class AuthService {
    * @type {string}
    */
   private readonly expiration: string;
+  private readonly refreshExpiration: string;
 
   /**
    * Constructor
@@ -46,6 +50,7 @@ export class AuthService {
     private readonly profileService: ProfileService,
   ) {
     this.expiration = this.configService.get("WEBTOKEN_EXPIRATION_TIME");
+    this.refreshExpiration = this.configService.get("WEBTOKEN_REFRESH_EXPIRATION_TIME");
   }
 
   /**
@@ -62,7 +67,8 @@ export class AuthService {
     return {
       expires: this.expiration,
       expiresPrettyPrint: AuthService.prettyPrintSeconds(this.expiration),
-      token: this.jwtService.sign({ _id, username, email, avatar }),
+      token: this.jwtService.sign({ _id, username, email, avatar }, {expiresIn: this.expiration, secret: this.configService.get("WEBTOKEN_SECRET_KEY")}),
+      refreshToken: this.jwtService.sign({ _id, username, email, avatar }, {expiresIn: this.refreshExpiration, secret: this.configService.get("WEBTOKEN_REFRESH_SECRET_KEY")}),
     };
   }
 
@@ -108,6 +114,21 @@ export class AuthService {
     return {
       message: 'User information from google',
       user: req.user
+    }
+  }
+
+  async refreshToken(payload: RefreshTokenPayload): Promise<ITokenReturnBody> {
+    try {
+      const jwtPayload = this.jwtService.verify(payload.refreshToken, {
+        secret: this.configService.get("WEBTOKEN_REFRESH_SECRET_KEY"),
+      });
+      const user = await this.profileService.get(jwtPayload._id);
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+      return this.createToken(user);
+    } catch (e) {
+      throw new UnauthorizedException();
     }
   }
 }

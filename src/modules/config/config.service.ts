@@ -49,7 +49,9 @@ export class ConfigService {
       GOOGLE_CLIENT_ID: joi.string().required(),
       GOOGLE_SECRET: joi.string().required(),
       WEBTOKEN_SECRET_KEY: joi.string().required(),
+      WEBTOKEN_REFRESH_SECRET_KEY: joi.string().required(),
       WEBTOKEN_EXPIRATION_TIME: joi.number().default(1800),
+      WEBTOKEN_REFRESH_EXPIRATION_TIME: joi.number().default(3600),
       DB_URL: joi.string().regex(/^mongodb/),
     });
 

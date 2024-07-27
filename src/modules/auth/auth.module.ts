@@ -32,6 +32,24 @@ import { GoogleStrategy } from "./google.strategy";
       },
       inject: [ConfigService],
     }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          secret: configService.get("WEBTOKEN_REFRESH_SECRET_KEY"),
+          signOptions: {
+            ...(configService.get("WEBTOKEN_REFRESH_EXPIRATION_TIME")
+              ? {
+                  expiresIn: Number(
+                    configService.get("WEBTOKEN_REFRESH_EXPIRATION_TIME"),
+                  ),
+                }
+              : {}),
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, GoogleStrategy],
