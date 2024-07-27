@@ -1,4 +1,4 @@
-import { GetProp, Input, UploadProps, Modal, Select, SelectProps } from "antd";
+import { Input, Modal, Select, SelectProps } from "antd";
 import { useEffect, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
 import * as breedService from "../../services/breedService"
@@ -6,9 +6,8 @@ import './createPostModal.scss'
 import UploadImage from "../uploadImage/uploadImage";
 import Breed from "../../models/breed";
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 type CreatePostModalProps = {
-    handleOk: (file: FileType, title: string, description: string, dogBreedID: string) => Promise<void>,
+    handleOk: (file: File, title: string, body: string, dogBreedID: string) => Promise<void>,
     handleCancel: () => void,
     isModalOpen: boolean
 }
@@ -38,9 +37,9 @@ const fetchBreeds = (value: string, callback: (data: Breed[]) => void) => {
 }
 
 export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }: CreatePostModalProps) {
-    const [file, setFile] = useState<FileType>();
+    const [file, setFile] = useState<File>();
     const [title, setTitle] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
+    const [body, setBody] = useState<string>("");
     const [breedsOptions, setBreedsOptions] = useState<Breed[]>([]);
     const [dogBreedID, setDogBreedID] = useState<string>("");
     const [breedAutoCompleteOptions, setBreedAutoCompleteOptions] = useState<SelectProps['options']>();
@@ -63,7 +62,11 @@ export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }:
 
     const onOk = async () => {
         setConfirmLoading(true)
-        await handleOk(file!, title, description, dogBreedID) 
+        await handleOk(file!, title, body, dogBreedID) 
+        setFile(undefined)
+        setBody("")
+        setTitle("")
+        setDogBreedID("")
         setConfirmLoading(false)
     }
 
@@ -76,23 +79,24 @@ export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }:
                 onOk={onOk}
                 onCancel={handleCancel}
                 open={isModalOpen}
-                okButtonProps={{ disabled: !file || title.length == 0 || description.length == 0 || dogBreedID.length == 0 }}
+                okButtonProps={{ disabled: !file || title.length == 0 || body.length == 0 || dogBreedID.length == 0 }}
                 confirmLoading={confirmLoading}
             >
                 <div className="modal-content-wrapper">
                     <div className="modal-content">
                         <Input value={title} placeholder="Title" className="input" onChange={e => { setTitle(e.target.value) }} />
-                        <TextArea value={description} rows={4} placeholder="Description" className="input" onChange={e => { setDescription(e.target.value) }} />
+                        <TextArea value={body} rows={4} placeholder="Body" className="input" onChange={e => { setBody(e.target.value) }} />
                         <Select
                             showSearch
                             placeholder="Dog Breed"
                             options={breedAutoCompleteOptions}
                             onSearch={handleSearch}
+                            value={dogBreedID}
                             className="input"
                             onChange={handleBreedSelect}
                             optionFilterProp="label"
                         />
-                        <UploadImage style={{ color: "white" }} onSelect={setFile}></UploadImage>
+                        {isModalOpen && <UploadImage style={{ color: "white" }} onSelect={setFile}></UploadImage>}
                     </div>
                 </div>
             </Modal>

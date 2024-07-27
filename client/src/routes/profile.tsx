@@ -8,12 +8,15 @@ import Meta from "antd/es/card/Meta";
 import { useCallback, useEffect, useState } from "react";
 import * as postsService from "../services/postsService"
 import * as userService from "../services/userService"
+import CreatePostButton from "../components/createPostButton/createPostButton";
+import useUserSyncing from "../hooks/useUserSyncing";
 
 
 export default function Profile() {
   const { userId } = useLoaderData() as { userId: string };
   const [posts, setPosts] = useState<PostModel[] | null>(null)
   const [user, setUser] = useState<UserModel>()
+  const { user: loggedUser } = useUserSyncing()
 
   const fetchData = useCallback(async () => {
     if (!userId) {
@@ -36,7 +39,7 @@ export default function Profile() {
               `https://robohash.org/${user.username}.png?size=200x200`}></img>}
           >
             <Meta
-              title={`${user.email}`}
+              title={<>{user.email}</>}
               description={<a
                 target="_blank"
                 href={`https://twitter.com/${user.username}`}
@@ -46,6 +49,7 @@ export default function Profile() {
             />
           </Card>
           <PostsList posts={posts} />
+          {loggedUser?._id == user._id && <CreatePostButton refreshPosts={fetchData} />}
         </div>
       }
     </ >

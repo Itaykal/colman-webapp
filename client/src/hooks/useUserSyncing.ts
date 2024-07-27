@@ -3,7 +3,7 @@ import User from "../models/user";
 import useSessionToken from "./useSessionToken";
 
 const useUserSyncing = () => {
-    const { decodedToken } = useSessionToken();
+    const { decodedToken, setToken } = useSessionToken();
     const [user, setUser] = useState<User>();
 
     const fetchUser = useCallback(async () => {
@@ -11,11 +11,15 @@ const useUserSyncing = () => {
         setUser(decodedToken)
     }, [decodedToken])
 
+    const logout = () => {
+        setToken(null)
+    }
+
     useEffect(() => {
         fetchUser();
     }, [fetchUser]);
 
-    return { user };
+    return { user, logout };
 };
 
 export default useUserSyncing;

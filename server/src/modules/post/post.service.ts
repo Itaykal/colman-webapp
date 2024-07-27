@@ -30,11 +30,11 @@ export class PostService {
   }
 
   getAll(): Promise<Array<IPost>> {
-    return this.postmodel.find().exec();
+    return this.postmodel.find().sort({'date': -1}).exec();
   }
 
   getByUser(id: string): Promise<Array<IPost>> {
-    return this.postmodel.find({ authorID: id }).exec();
+    return this.postmodel.find({ authorID: id }).sort({'date': -1}).exec();
   }
 
   incrementComments(id: string): Promise<IPost> {
