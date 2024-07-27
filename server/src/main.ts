@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import AppModule from './modules/app/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import fs from 'fs';
 import * as morgan from 'morgan';
 
 export const SWAGGER_API_ROOT = 'api/docs';
@@ -9,7 +10,11 @@ export const SWAGGER_API_NAME = 'API';
 export const SWAGGER_API_DESCRIPTION = 'API Description';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const httpsOptions = {
+    key: fs.readFileSync('../secrets/server.key'),
+    cert: fs.readFileSync('../secrets/server.crt'),
+  };
+  const app = await NestFactory.create(AppModule, {httpsOptions});
   app.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
