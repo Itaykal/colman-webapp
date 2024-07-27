@@ -12,6 +12,10 @@ export class PostPostPayload {
 
   @ApiProperty({ required: true })
   @IsNotEmpty()
+  breedId: string;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
   body: string;
 
   @ApiProperty({ required: true })
