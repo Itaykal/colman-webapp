@@ -10,6 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Delete,
 } from "@nestjs/common";
 import { extname } from "path";
 import * as multer from "multer";
@@ -111,6 +112,7 @@ export class PostController {
 
 
   @Post("/:postId/edit")
+  @UseGuards(AuthGuard("jwt"))
   @ApiResponse({ status: 200, description: "Edit Post Request Received" })
   @ApiResponse({ status: 400, description: "Edit Post Request Failed" })
   async editPost(
@@ -127,6 +129,20 @@ export class PostController {
         throw new BadRequestException("You are not the author of this post");
       }
       const post = await this.postService.edit(payload, postId);
+      return post;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete(":id")
+  @UseGuards(AuthGuard("jwt"))
+
+  @ApiResponse({ status: 200, description: "Delete Post Request Received" })
+  @ApiResponse({ status: 400, description: "Delete Post Request Failed" })
+  async deletePost(@Param("id") id: string): Promise<IGenericMessageBody> {
+    try {
+      const post = await this.postService.delete(id);
       return post;
     } catch (error) {
       throw new BadRequestException(error.message);
