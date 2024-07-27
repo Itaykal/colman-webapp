@@ -16,7 +16,7 @@ import {
 import { CommentService } from "./comment.service";
 import { PostCommentPayload } from "./payload/post.comment.payload";
 import { IComment } from "./comment.model";
-import { PostService } from "modules/post/post.service";
+import { PostService } from "../post/post.service";
 
 @ApiBearerAuth()
 @ApiTags("comment")
