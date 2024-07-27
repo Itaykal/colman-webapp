@@ -37,7 +37,7 @@ const useSessionToken = () => {
 
     useEffect(() => {
         if (token) {
-            apiClient.defaults.headers.common["Authorization"] = "Bearer " + token;
+            apiClient.defaults.headers.common["Authorization"] = "Bearer " + token.accessToken;
             setSessionToken(token)
         } else {
             delete apiClient.defaults.headers.common["Authorization"];

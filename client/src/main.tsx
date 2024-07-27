@@ -84,6 +84,9 @@ ReactDOM.createRoot(document.getElementById("root") as ReactDOM.Container).rende
           List: {
             colorText: 'white'
           },
+          Empty: {
+            colorTextDescription: "rgba(256,256,256, 0.45)"
+          }
         },
       }}
     >

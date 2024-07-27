@@ -8,7 +8,7 @@ import Breed from "../../models/breed";
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 type CreatePostModalProps = {
-    handleOk: (file: FileType, title: string, description: string, dogBreedID: string) => void,
+    handleOk: (file: FileType, title: string, description: string, dogBreedID: string) => Promise<void>,
     handleCancel: () => void,
     isModalOpen: boolean
 }
@@ -23,7 +23,8 @@ const fetchBreeds = (value: string, callback: (data: Breed[]) => void) => {
     }
     currentValue = value;
 
-    const fake = () => {
+    const f = () => {
+        console.log("searching breeds", value)
         breedService.searchBreed(value)
             .then((d: Breed[]) => {
                 if (currentValue === value) {
@@ -31,7 +32,7 @@ const fetchBreeds = (value: string, callback: (data: Breed[]) => void) => {
                 }
             });
     };
-    timeout = setTimeout(fake, 300);
+    timeout = setTimeout(f, 300);
 
 
 }
@@ -43,14 +44,15 @@ export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }:
     const [breedsOptions, setBreedsOptions] = useState<Breed[]>([]);
     const [dogBreedID, setDogBreedID] = useState<string>("");
     const [breedAutoCompleteOptions, setBreedAutoCompleteOptions] = useState<SelectProps['options']>();
+    const [confirmLoading, setConfirmLoading] = useState(false);
 
     const searchCallback = (breeds: Breed[]) => {
-        console.log(breeds)
         setBreedsOptions(breeds)
         setBreedAutoCompleteOptions(breeds.map(breed => { return { value: breed.id, label: breed.attributes.name } }))
     }
 
     const handleSearch = (e: string) => {
+        if (!e) return;
         fetchBreeds(e, searchCallback)
     }
 
@@ -59,16 +61,23 @@ export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }:
         setDogBreedID(breed?.id || "");
     }
 
-    useEffect(() => { handleSearch("") })
+    const onOk = async () => {
+        setConfirmLoading(true)
+        await handleOk(file!, title, description, dogBreedID) 
+        setConfirmLoading(false)
+    }
+
+    useEffect(() => { fetchBreeds("", searchCallback) }, [])
 
     return (
         <>
             <Modal
                 title="Create post"
-                onOk={() => { handleOk(file!, title, description, dogBreedID) }}
+                onOk={onOk}
                 onCancel={handleCancel}
                 open={isModalOpen}
                 okButtonProps={{ disabled: !file || title.length == 0 || description.length == 0 || dogBreedID.length == 0 }}
+                confirmLoading={confirmLoading}
             >
                 <div className="modal-content-wrapper">
                     <div className="modal-content">

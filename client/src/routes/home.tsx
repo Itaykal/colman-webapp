@@ -19,11 +19,11 @@ export default function Home() {
 
     return (
         <> {posts === null ? (<Spin />) :
-        <div className="home">
-            <PostsList posts={posts} />
-            <CreatePostButton />
-        </div>
-}
+            <div className="home">
+                <PostsList posts={posts} />
+                <CreatePostButton />
+            </div>
+        }
         </>
     )
 }

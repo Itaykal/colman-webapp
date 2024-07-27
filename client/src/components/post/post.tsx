@@ -7,10 +7,13 @@ import { CommentOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useState } from "react";
 import * as breedService from "../../services/breedService"
 import Breed from "../../models/breed";
+import * as userService from "../../services/userService"
+import User from "../../models/user";
 
 export default function Post({ post, }: { post: PostModel, }) {
     const navigate = useNavigate()
     const [breed, setBreed] = useState<Breed>()
+    const [author, setAuthor] = useState<User>()
 
     const fetchData = useCallback(async () => {
         const newBreed = await breedService.getBreed(post.breedId);
@@ -19,26 +22,34 @@ export default function Post({ post, }: { post: PostModel, }) {
 
     useEffect(() => { fetchData() }, [fetchData])
 
+    const fetchAuthor = useCallback(async () => {
+        const newAuthor = await userService.getUser(post.authorID);
+        setAuthor(newAuthor)
+    }, [post.authorID])
+
+    useEffect(() => { fetchData() }, [fetchData])
+    useEffect(() => { fetchAuthor() }, [fetchAuthor])
+
     return (
         <Card
             className="post"
             bordered={false}
-            cover={<img alt="example" src={post.imageURL} />}
+            cover={<img onClick={() => { navigate(`/post/${post._id}`) }} alt="example" src={post.imageUrl} />}
             hoverable
-            onClick={() => { navigate(`/post/${post._id}`) }}
+            
         >
             <Meta
                 title={<>
                     {post.title}<br />
                     <Flex justify="space-between">
                         <Link to={`/breed/${post.breedId}`}>{breed?.attributes.name}</Link>
-                        <div>{post.commentsCount}<CommentOutlined /></div>
+                        <div>{post.comments}<CommentOutlined /></div>
                     </Flex >
                 </>}
-                description={`${post.description}\n${post.description}`}
+                description={post.body}
                 avatar={
-                    <Link to={`/profile/${post.authorId}`}>
-                        <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
+                    <Link to={`/profile/${author?._id}`}>
+                        <Avatar src={author?.avatar}/>
                     </Link>
                 }
             />
