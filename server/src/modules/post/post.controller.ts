@@ -106,7 +106,7 @@ export class PostController {
   ))
   @Post("/upload-file")
   async uploadFile(@Req() req): Promise<string> {
-    return req.file.filename;
+    return `/public/${req.file.filename}`;
   }
 
 

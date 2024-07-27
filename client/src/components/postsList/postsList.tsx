@@ -10,9 +10,7 @@ export default function PostList({ posts }: { posts: PostModel[] }) {
                 <Empty
                     image={Empty.PRESENTED_IMAGE_SIMPLE}
                     description={
-                        <Typography.Text className="empty-text">
-                            No posts
-                        </Typography.Text>
+                            "No posts"
                     }
                 /> :
                 posts.map(p => {

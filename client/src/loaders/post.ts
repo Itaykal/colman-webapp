@@ -1,3 +1,3 @@
-export function loader({ params: { posdId } }: { params: { posdId: string } }): { posdId: string; } {
-  return { posdId: posdId }
+export function loader({ params: { postId } }: { params: { postId: string } }): { postId: string; } {
+  return { postId: postId }
 }

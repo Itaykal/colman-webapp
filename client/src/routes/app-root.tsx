@@ -37,7 +37,6 @@ export default function AppRoot() {
       path: '/'
     },
     { label: 'Profile', key: 'profile', path: `/profile/${user?._id}` },
-    { label: 'Caucasian Shepherd Dog', key: 'dog', path: '/breed/68f47c5a-5115-47cd-9849-e45d3c378f12' },
   ], [user])
 
 
