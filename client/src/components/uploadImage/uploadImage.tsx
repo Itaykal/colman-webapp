@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { GetProp, Upload, UploadFile, UploadProps, Image } from "antd"
+import { GetProp, Upload, UploadFile, UploadProps, Image, Row, Space } from "antd"
 import { useState } from "react";
 import "./uploadImage.scss"
 
@@ -13,55 +13,47 @@ const getBase64 = (file: FileType): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
-export default function UploadImage({ onUpload, style }: { onUpload: (file: UploadFile) => void, style: React.CSSProperties }) {
-    const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as FileType);
-        }
-
-        setPreviewImage(file.url || (file.preview as string));
-        setPreviewOpen(true);
+export default function UploadImage(
+    { onSelect, style, uploadText }: { onSelect: (file: FileType) => void, style: React.CSSProperties, uploadText?: string }
+) {
+    const handlePreview = async (file: FileType) => {
+        const b64File = await getBase64(file);
+        setPreviewImage(b64File);
     };
-    const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const uploadButton = (
         <button className="upload-button" type="button">
             <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
+            <div style={{ marginTop: 8 }}>{uploadText || "Upload"}</div>
         </button>
     );
 
     return (
         <>
-            <Upload
+            <Space><Upload
                 style={style}
-                onChange={e => {
-                    setFileList(e.fileList);
-                    onUpload(e.fileList[0])
+                beforeUpload={async e => {
+                    handlePreview(e)
+                    onSelect(e)
+                    return false;
                 }}
                 listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
+                fileList={[]}
                 accept=".jpeg,.png,.jpg"
+                maxCount={1}
             >
-                {fileList.length >= 1 ? null : uploadButton}
+                {uploadButton}
             </Upload>
             {
                 previewImage && (
                     <Image
-                        wrapperStyle={{ display: 'none' }}
-                        preview={{
-                            visible: previewOpen,
-                            onVisibleChange: (visible) => setPreviewOpen(visible),
-                            afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                        }}
-
+                    width={102}
+                    height={102}
                         src={previewImage}
                     />
                 )
-            }
+            }</Space>
         </>
     )
 }

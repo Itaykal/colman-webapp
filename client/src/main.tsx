@@ -38,7 +38,7 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "profile/:userHandle",
+        path: "profile/:userId",
         element: <Profile />,
         loader: profileLoader,
       },
@@ -60,6 +60,9 @@ ReactDOM.createRoot(document.getElementById("root") as ReactDOM.Container).rende
           colorPrimary: "#ff8717",
         },
         components: {
+          Button: {
+            defaultShadow: "none"
+          },
           Modal: {
             contentBg: '#242424',
             headerBg: '#242424',

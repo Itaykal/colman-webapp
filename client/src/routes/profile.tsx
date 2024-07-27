@@ -1,61 +1,61 @@
-import User from "../models/user";
-import Post from "../models/post";
+import UserModel from "../models/user";
+import PostModel from "../models/post";
 import PostsList from "../components/postsList/postsList";
 import "../styles/profile.scss"
 import { useLoaderData } from "react-router-dom";
+import { Card } from "antd";
+import Meta from "antd/es/card/Meta";
+import { useCallback, useEffect, useState } from "react";
+import * as postsService from "../services/postsService"
+import * as userService from "../services/userService"
 
-const posts: Post[] = Array(5).fill(
-  {
-    authorId: "1",
-    description: "this post was made by moth gang",
-    imageURL: "https://24ai.tech/en/wp-content/uploads/sites/3/2023/10/01_product_1_sdelat-kvadratnym-5-scaled.jpg",
-    title: "Lmao imagine being a butterfly",
-    breedId: "ff7758e7-c33d-472d-ab8d-04d3a6354b39",
-  },
-);
 
 export default function Profile() {
-  const { user } = useLoaderData() as { user: User };
+  const { userId } = useLoaderData() as { userId: string };
+  const [posts, setPosts] = useState<PostModel[]>([])
+  const [user, setUser] = useState<UserModel>()
+
+  const fetchPosts = useCallback(async () => {
+    if (!userId) {
+      return;
+    }
+    const [newPosts, newUser] = await Promise.all([postsService.getPosts(userId), userService.getUser(userId)])
+    setUser(newUser)
+    setPosts(newPosts)
+  }, [userId])
+
+  const fetchUser = useCallback(async () => {
+    if (!userId) {
+      return;
+    }
+
+  }, [userId])
+
+
+  useEffect(() => { fetchPosts() }, [fetchPosts])
+  useEffect(() => { fetchUser() }, [fetchUser])
 
   return (
     <div className="profile">
-      <div className="user-info">
-        <div>
-          <img
-            key={user.avatar}
-            src={
-              user.avatar ||
-              `https://robohash.org/${user.first}.png?size=200x200`
-            }
+      {!user ? null :
+        <Card
+          className="user-info"
+          cover={<img src={user.avatar ||
+            `https://robohash.org/${user.first}.png?size=200x200`}></img>}
+        >
+          <Meta
+            title={`${user.first} ${user.last}`}
+            description={<a
+              target="_blank"
+              href={`https://twitter.com/${user.handle}`}
+            >
+              {user.handle}
+            </a>}
           />
-        </div>
-
-        <div>
-          <h1>
-            {user.first || user.last ? (
-              <>
-                {user.first} {user.last}
-              </>
-            ) : (
-              <i>No Name</i>
-            )}{" "}
-          </h1>
-
-          {user.handle && (
-            <p>
-              <a
-                target="_blank"
-                href={`https://twitter.com/${user.handle}`}
-              >
-                {user.handle}
-              </a>
-            </p>
-          )}
-        </div>
-      </div>
-
+        </Card>
+      }
       <PostsList posts={posts} />
-    </div>
+    </div >
   );
 }
 

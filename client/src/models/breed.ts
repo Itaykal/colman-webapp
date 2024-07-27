@@ -6,10 +6,10 @@ export interface Range {
 export interface BreedAttributes {
     name: string,
     description: string,
-    life: Range,
-    male_weight: Range,
-    female_weight: Range,
-    hypoallergenic: boolean
+    life?: Range,
+    male_weight?: Range,
+    female_weight?: Range,
+    hypoallergenic?: boolean
 }
 
 export default interface Breed {

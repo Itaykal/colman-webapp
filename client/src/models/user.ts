@@ -3,4 +3,5 @@ export default interface User {
     last: string,
     avatar: string,
     handle: string,
+    id: string
 }

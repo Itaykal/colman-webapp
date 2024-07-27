@@ -10,7 +10,9 @@
         justify-content: center;
 
         .upload-button {
-            color: white;
+            color: white !important;
+
+
         }
 
         .input {
@@ -18,4 +20,9 @@
             width: 100%;
         }
     }
+}
+
+.ant-btn-primary:disabled {
+    color: rgba(256, 256, 256, 0.25) !important;
+    border-color: rgba(256, 256, 256, 0.25) !important; 
 }

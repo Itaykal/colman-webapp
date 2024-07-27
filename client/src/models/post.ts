@@ -3,5 +3,6 @@ export default interface Post {
     description: string,
     authorId: string,
     imageURL: string,
-    breedId: string
+    breedId: string,
+    breedName: string
 }

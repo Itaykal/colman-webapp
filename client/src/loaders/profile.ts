@@ -1,12 +1,7 @@
 import User from "../models/user";
+import * as UserService from "../services/userService"
 
-export async function loader({ params: { userHandle } }: { params: { userHandle: string } }): Promise<{ user: User; }> {
-    const user = {
-      first: "Your",
-      last: "Name",
-      avatar: "https://robohash.org/you.png?size=200x200",
-      handle: userHandle,
-    }
-    return { user };
+export function loader({ params: { userId } }: { params: { userId: string } }): { userId: string; } {
+    return {userId: userId}
   }
   
