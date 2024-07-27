@@ -99,4 +99,15 @@ export class AuthService {
     }
     return user;
   }
+
+  googleLogin(req) {
+    if (!req.user) {
+      throw new UnauthorizedException('No user from google')
+    }
+
+    return {
+      message: 'User information from google',
+      user: req.user
+    }
+  }
 }

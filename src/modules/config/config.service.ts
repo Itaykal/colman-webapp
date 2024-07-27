@@ -45,6 +45,9 @@ export class ConfigService {
       APP_URL: joi.string().uri({
         scheme: [/https?/],
       }),
+      APP_PORT: joi.number().required(),
+      GOOGLE_CLIENT_ID: joi.string().required(),
+      GOOGLE_SECRET: joi.string().required(),
       WEBTOKEN_SECRET_KEY: joi.string().required(),
       WEBTOKEN_EXPIRATION_TIME: joi.number().default(1800),
       DB_URL: joi.string().regex(/^mongodb/),

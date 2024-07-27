@@ -46,11 +46,13 @@
     "mongoose": "6.5.3",
     "nest-access-control": "2.2.0",
     "passport": "0.6.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "4.0.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "rxjs": "7.5.6",
     "swagger-ui-express": "4.5.0",
+    "ts-custom-error": "^3.3.1",
     "typeorm": "0.3.7",
     "winston": "3.8.1",
     "winston-daily-rotate-file": "4.7.1"

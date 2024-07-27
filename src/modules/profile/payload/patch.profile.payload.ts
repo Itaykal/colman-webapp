@@ -44,4 +44,7 @@ export class PatchProfilePayload {
   @IsNotEmpty()
   @MinLength(8)
   password: string;
+
+  @ApiProperty()
+  avatar: string;
 }
