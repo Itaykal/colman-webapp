@@ -15,6 +15,7 @@ import {
 } from "@nestjs/swagger";
 import { CommentService } from "./comment.service";
 import { PostCommentPayload } from "./payload/post.comment.payload";
+import { EditCommentPayload } from "./payload/edit.comment.payload";
 import { IComment } from "./comment.model";
 import { PostService } from "../post/post.service";
 
@@ -45,4 +46,21 @@ export class CommentController {
     this.postService.incrementComments(payload.postId);
     return comment;
   }
+
+  @UseGuards(AuthGuard("jwt"))
+  @Post("/:commentId/edit")
+  @ApiResponse({ status: 201, description: "Post Comment Request Received" })
+  @ApiResponse({ status: 400, description: "Post Comment Request Failed" })
+  async editComment(
+    @Param("commentId") commentId: string,
+    @Body() payload: EditCommentPayload,
+    @Req() req: any,
+  ): Promise<IComment> {
+    const comment = await this.commentService.get(commentId);
+    if (String(comment.authorID) !== String(req.user._id)) {
+      throw new Error("You are not the author of this comment");
+    }
+    return await this.commentService.edit(commentId, payload);
+  }
 }
+
