@@ -90,7 +90,7 @@ export class ProfileService {
   async create(payload: RegisterPayload): Promise<IProfile> {
     const user = await this.getByUsername(payload.username);
     if (user) {
-      throw new NotAcceptableException(
+      throw new UserAlreadyExists(
         "The account with the provided username currently exists. Please choose another one.",
       );
     }
