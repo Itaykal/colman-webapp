@@ -52,6 +52,14 @@ export class PostService {
     });
     return createdPost.save();
   }
+
+  async delete(id: string): Promise<IGenericMessageBody> {
+    const post = await this.postmodel.findByIdAndDelete(id).exec();
+    if (!post) {
+      throw new NotAcceptableException("Post not found");
+    }
+    return { message: "Post deleted" };
+  }
   
   async edit(payload: EditPostPayload, id: string): Promise<IPost> {
     const post = await this.postmodel.findOneAndUpdate({
