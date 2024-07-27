@@ -23,7 +23,7 @@ export class CommentService {
   }
 
   async create(payload: PostCommentPayload, uid: string): Promise<IComment> {
-    const createdPost = new this.commentModel({...payload, authorID: uid});
+    const createdPost = new this.commentModel({...payload, authorID: uid, date: new Date()});
     return createdPost.save();
   }
 }
