@@ -13,6 +13,23 @@ export const login = async (username: string, password: string): Promise<Token> 
     return response.data
 }
 
+export const refresh = async (refreshToken: string): Promise<Token> => {
+    const response = await apiClient.post("/api/auth/refresh", { refreshToken })
+    return response.data
+}
+
+export const editUser = async (username: string, profilePicture?: File): Promise<User> => {
+    let body: object;
+    if (profilePicture) {
+        const imageUrl = await fileService.uploadFile(profilePicture)
+        body = {username, avatar: imageUrl}
+    } else {
+        body = {username}
+    }
+    const response = await apiClient.post("/api/profile/edit", body)
+    return response.data as User
+}
+
 export const register = async (username: string, password: string, email: string, profilePicture: File): Promise<Token> => {
     const imageUrl = await fileService.uploadFile(profilePicture)
     const response = await apiClient.post("/api/auth/register", { username, password, email, avatar: imageUrl })

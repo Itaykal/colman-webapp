@@ -23,6 +23,27 @@ export const createPost = async (file: File, title: string, body: string, dogBre
     return postResponse.data as Post
 }
 
+export const editPost = async (postId: string, title: string, body: string, dogBreedID: string, file?: File): Promise<Post> => {
+    let requestBody: object;
+    if (file) {
+        const imageUrl = await fileService.uploadFile(file)
+        requestBody = {
+            title: title,
+            breedId: dogBreedID,
+            body: body,
+            imageUrl: imageUrl,
+        }
+    } else {
+        requestBody = {
+            title: title,
+            breedId: dogBreedID,
+            body: body,
+        }
+    }
+    const postResponse = await apiClient.post(`/api/post/${postId}/edit`, requestBody)
+    return postResponse.data as Post
+}
+
 export const createComment = async (postId: string, body: string): Promise<Comment> => {
     const commentResponse = await apiClient.post(`/api/comment`, {
         body: body,

@@ -5,11 +5,15 @@ import * as breedService from "../../services/breedService"
 import './createPostModal.scss'
 import UploadImage from "../uploadImage/uploadImage";
 import Breed from "../../models/breed";
+import PostModel from "../../models/post";
 
 type CreatePostModalProps = {
-    handleOk: (file: File, title: string, body: string, dogBreedID: string) => Promise<void>,
+    handleOk: (title: string, body: string, dogBreedID: string, file?: File,) => Promise<void>,
     handleCancel: () => void,
-    isModalOpen: boolean
+    isModalOpen: boolean,
+    initialPost?: PostModel,
+    initialBreed?: string,
+    allowEmptyFile: boolean
 }
 
 let timeout: ReturnType<typeof setTimeout> | null;
@@ -23,7 +27,6 @@ const fetchBreeds = (value: string, callback: (data: Breed[]) => void) => {
     currentValue = value;
 
     const f = () => {
-        console.log("searching breeds", value)
         breedService.searchBreed(value)
             .then((d: Breed[]) => {
                 if (currentValue === value) {
@@ -36,12 +39,12 @@ const fetchBreeds = (value: string, callback: (data: Breed[]) => void) => {
 
 }
 
-export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }: CreatePostModalProps) {
+export default function CreatePostModal({ handleOk, handleCancel, isModalOpen, initialPost, initialBreed, allowEmptyFile }: CreatePostModalProps) {
     const [file, setFile] = useState<File>();
-    const [title, setTitle] = useState<string>("");
-    const [body, setBody] = useState<string>("");
+    const [title, setTitle] = useState<string>(initialPost?.title || "");
+    const [body, setBody] = useState<string>(initialPost?.body || "");
     const [breedsOptions, setBreedsOptions] = useState<Breed[]>([]);
-    const [dogBreedID, setDogBreedID] = useState<string>("");
+    const [dogBreedID, setDogBreedID] = useState<string>(initialPost?.breedId || "");
     const [breedAutoCompleteOptions, setBreedAutoCompleteOptions] = useState<SelectProps['options']>();
     const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -62,7 +65,7 @@ export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }:
 
     const onOk = async () => {
         setConfirmLoading(true)
-        await handleOk(file!, title, body, dogBreedID) 
+        await handleOk(title, body, dogBreedID, file)
         setFile(undefined)
         setBody("")
         setTitle("")
@@ -70,7 +73,7 @@ export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }:
         setConfirmLoading(false)
     }
 
-    useEffect(() => { fetchBreeds("", searchCallback) }, [])
+    useEffect(() => { fetchBreeds(initialBreed || "", searchCallback) }, [])
 
     return (
         <>
@@ -79,7 +82,7 @@ export default function CreatePostModal({ handleOk, handleCancel, isModalOpen }:
                 onOk={onOk}
                 onCancel={handleCancel}
                 open={isModalOpen}
-                okButtonProps={{ disabled: !file || title.length == 0 || body.length == 0 || dogBreedID.length == 0 }}
+                okButtonProps={{ disabled: (!allowEmptyFile && !file) || title.length == 0 || body.length == 0 || dogBreedID.length == 0 }}
                 confirmLoading={confirmLoading}
             >
                 <div className="modal-content-wrapper">
