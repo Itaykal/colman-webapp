@@ -11,10 +11,17 @@ import { IProfile } from "./profile.model";
 import { RegisterPayload } from "modules/auth/payload/register.payload";
 import { AppRoles } from "../app/app.roles";
 import { PatchProfilePayload } from "./payload/patch.profile.payload";
+import { CustomError } from 'ts-custom-error'
 
-/**
- * Models a typical response for a crud operation
- */
+
+export class UserAlreadyExists extends CustomError {
+  public constructor(
+      message?: string,
+  ) {
+      super(message)
+  }
+}
+
 export interface IGenericMessageBody {
   /**
    * Status message to return
@@ -67,6 +74,14 @@ export class ProfileService {
       })
       .exec();
   }
+  
+  getByEmail(email: string): Promise<IProfile> {
+    return this.profileModel
+    .findOne({
+      email: email
+    })
+    .exec();
+  }
 
   /**
    * Create a profile with RegisterPayload fields
@@ -80,7 +95,14 @@ export class ProfileService {
         "The account with the provided username currently exists. Please choose another one.",
       );
     }
-    // this will auto assign the admin role to each created user
+
+    const email = await this.getByEmail(payload.email);
+    if (email) {
+      throw new UserAlreadyExists(
+        "The account with the provided email currently exists. Please choose another one.",
+      );
+    }
+
     const createdProfile = new this.profileModel({
       ...payload,
       password: crypto.createHmac("sha256", payload.password).digest("hex"),
