@@ -38,6 +38,7 @@ export class ConfigService {
      * A schema to validate envConfig against
      */
     const envVarsSchema: joi.ObjectSchema = joi.object({
+      NODE_ENV: joi.string().valid(['development', 'test', 'production']).default('development'),
       APP_ENV: joi
         .string()
         .valid("dev", "prod")
