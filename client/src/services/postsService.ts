@@ -12,6 +12,11 @@ export const getPosts = async (userId?: string): Promise<Post[]> => {
     return response.data;
 }
 
+export const deletePost = async (postId: string) => {
+    const response = await apiClient.delete(`/api/post/${postId}`)
+    return response.data;
+}
+
 export const createPost = async (file: File, title: string, body: string, dogBreedID: string): Promise<Post> => {
     const imageUrl = await fileService.uploadFile(file)
     const postResponse = await apiClient.post(`/api/post`, {
@@ -51,6 +56,13 @@ export const createComment = async (postId: string, body: string): Promise<Comme
     })
     return commentResponse.data as Comment
 }
+
+export const editComment = async (commentId: string, body: string): Promise<Comment> => {
+    const commentResponse = await apiClient.post(`/api/comment/${commentId}/edit`, {
+        body: body,
+    })
+    return commentResponse.data as Comment
+} 
 
 export const getPost = async (postId: string): Promise<Post> => {
     const response = await apiClient.get(`/api/post/${postId}`)

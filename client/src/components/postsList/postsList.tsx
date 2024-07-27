@@ -3,7 +3,7 @@ import PostModel from "../../models/post"
 import Post from "../post/post"
 import "./postsList.scss"
 
-export default function PostList({ posts }: { posts: PostModel[] }) {
+export default function PostList({ posts, refreshPosts }: { posts: PostModel[], refreshPosts: () => void }) {
     return (
         <div className="posts-list">
             {posts.length == 0 ?
@@ -15,7 +15,7 @@ export default function PostList({ posts }: { posts: PostModel[] }) {
                 /> :
                 posts.map(p => {
                     return (
-                        <Post key={p._id} post={p} />
+                        <Post refreshPosts={refreshPosts} key={p._id} post={p} />
                     )
                 })}
         </ div>

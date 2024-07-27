@@ -2,8 +2,7 @@ import UserModel from "../models/user";
 import PostModel from "../models/post";
 import PostsList from "../components/postsList/postsList";
 import "../styles/profile.scss"
-import { useLoaderData } from "react-router-dom";
-import { Card, Flex, Modal, Spin } from "antd";
+import { Card, Flex, Spin } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useCallback, useEffect, useState } from "react";
 import * as postsService from "../services/postsService"
@@ -12,14 +11,20 @@ import CreatePostButton from "../components/createPostButton/createPostButton";
 import useUserSyncing from "../hooks/useUserSyncing";
 import { EditOutlined } from "@ant-design/icons";
 import EditProfileModal from "../components/editProfileModal/editProfileModal";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 export default function Profile() {
-  const { userId } = useLoaderData() as { userId: string };
+  const navigate = useNavigate()
+  const { userId } = useParams()
   const [posts, setPosts] = useState<PostModel[] | null>(null)
   const [user, setUser] = useState<UserModel>()
   const [modalVisible, setModalVisible] = useState(false)
   const { user: loggedUser } = useUserSyncing()
+
+  useEffect(() => {
+    if (!userId) navigate("/")
+  })
 
   const openModal = () => {
     setModalVisible(true)
@@ -63,7 +68,7 @@ export default function Profile() {
               </a>}
             />
           </Card>
-          <PostsList posts={posts} />
+          <PostsList refreshPosts={fetchData} posts={posts} />
           {loggedUser?._id == user._id && <>
             <CreatePostButton refreshPosts={fetchData} />
             {modalVisible && <EditProfileModal

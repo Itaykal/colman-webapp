@@ -1,3 +1,4 @@
+import { CredentialResponse } from "@react-oauth/google";
 import { Token } from "../hooks/useSessionToken";
 import User from "../models/user";
 import apiClient from "./apiClient";
@@ -33,5 +34,10 @@ export const editUser = async (username: string, profilePicture?: File): Promise
 export const register = async (username: string, password: string, email: string, profilePicture: File): Promise<Token> => {
     const imageUrl = await fileService.uploadFile(profilePicture)
     const response = await apiClient.post("/api/auth/register", { username, password, email, avatar: imageUrl })
+    return response.data
+}
+
+export const googleSignin = async (credentialResponse: CredentialResponse): Promise<Token> => {
+    const response = await apiClient.post("/api/auth/google", credentialResponse)
     return response.data
 }

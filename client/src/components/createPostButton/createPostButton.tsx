@@ -12,8 +12,8 @@ export default function CreatePostButton({ refreshPosts }: { refreshPosts: () =>
         setIsModalOpen(true);
     };
 
-    const handleOk = async (file: File, title: string, body: string, dogBreedID: string) => {
-        await postsService.createPost(file, title, body, dogBreedID);
+    const handleOk = async (title: string, body: string, dogBreedID: string, file?: File) => {
+        await postsService.createPost(file!, title, body, dogBreedID);
         refreshPosts()
         setIsModalOpen(false);
     };
@@ -25,7 +25,7 @@ export default function CreatePostButton({ refreshPosts }: { refreshPosts: () =>
     return (
         <>
             <FloatButton icon={<PlusOutlined />} onClick={showModal} />
-            <CreatePostModal handleCancel={handleCancel} handleOk={handleOk} isModalOpen={isModalOpen} />
+            <CreatePostModal allowEmptyFile={false} handleCancel={handleCancel} handleOk={handleOk} isModalOpen={isModalOpen} />
         </>
     )
 }

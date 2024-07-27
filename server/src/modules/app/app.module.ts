@@ -27,8 +27,8 @@ import { join } from 'path';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', '..', '..', 'client', 'dist'),
-      serveStaticOptions: { index: false },
-      serveRoot: '/',
+      // serveStaticOptions: { index: ['index.html'] },
+      // serveRoot: '/',
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
