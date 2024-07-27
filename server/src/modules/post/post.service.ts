@@ -36,13 +36,19 @@ export class PostService {
     return this.postmodel.find({ authorID: id }).exec();
   }
 
+  incrementComments(id: string): Promise<IPost> {
+    return this.postmodel
+      .findByIdAndUpdate(id, { $inc: { comments: 1 } })
+      .exec();
+  }
+
   async create(payload: PostPostPayload, uid: string): Promise<IPost> {
     const createdPost = new this.postmodel({
       ...payload,
       imagePath: "",
       authorID: uid,
       date: new Date(),
-      likes: 0,
+      comments: 0,
     });
     return createdPost.save();
   }
