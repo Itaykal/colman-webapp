@@ -8,9 +8,13 @@ import {
 export class PostPostPayload {
   @ApiProperty({ required: true })
   @IsNotEmpty()
+  title: string;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
   body: string;
 
   @ApiProperty({ required: true })
   @IsNotEmpty()
-  imagePath: string;
+  imageUrl: string;
 }

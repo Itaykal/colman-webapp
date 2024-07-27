@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -25,6 +24,7 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { PostService, IGenericMessageBody } from "./post.service";
 import { PostPostPayload } from "./payload/post.post.payload";
+import { EditPostPayload } from "./payload/edit.post.payload";
 import { IPost } from "./post.model";
 
 @ApiBearerAuth()
@@ -108,4 +108,21 @@ export class PostController {
   async uploadFile(@Req() req): Promise<string> {
     return req.file.filename;
   }
+
+
+  @Post("/:postId/edit")
+  @ApiResponse({ status: 200, description: "Edit Post Request Received" })
+  @ApiResponse({ status: 400, description: "Edit Post Request Failed" })
+  async editPost(
+    @Param("postId") postId: string,
+    @Body() payload: EditPostPayload,
+  ): Promise<IPost> {
+    try {
+      const post = await this.postService.edit(payload, postId);
+      return post;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
 }

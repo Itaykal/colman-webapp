@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import { IPost } from "./post.model";
 import { PostPostPayload } from "../post/payload/post.post.payload";
+import { EditPostPayload } from "./payload/edit.post.payload";
 
 
 export interface IGenericMessageBody {
@@ -45,11 +46,27 @@ export class PostService {
   async create(payload: PostPostPayload, uid: string): Promise<IPost> {
     const createdPost = new this.postmodel({
       ...payload,
-      imagePath: "",
+      imageUrl: "",
       authorID: uid,
       date: new Date(),
       comments: 0,
     });
     return createdPost.save();
+  }
+  
+  async edit(payload: EditPostPayload, id: string): Promise<IPost> {
+    const post = await this.postmodel.findOneAndUpdate({
+      _id: id,
+    }, {
+      ...payload,
+    }, {
+      new: true,
+    }).exec();
+    
+    if (!post) {
+      throw new NotAcceptableException("Post not found");
+    }
+
+    return post;
   }
 }
