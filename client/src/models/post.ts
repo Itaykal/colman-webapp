@@ -1,10 +1,9 @@
 export default interface Post {
     _id: string
     title: string,
-    description: string,
-    authorId: string,
-    imageURL: string,
-    commentsCount: number,
+    body: string,
+    authorID: string,
+    imageUrl: string,
+    comments: number,
     breedId: string,
-    breedName: string
 }

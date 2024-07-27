@@ -7,6 +7,7 @@ export const Post = new Schema({
   authorID: { type: Schema.Types.ObjectId, required: true },
   imageUrl: { type: String, required: true },
   body: { type: String, required: true },
+  title: { type: String, required: true },
   breedId: { type: String, required: true },
   comments: { type: Number, default: 0 },
   date: {
@@ -19,6 +20,7 @@ export interface IPost extends Document {
   readonly _id: Schema.Types.ObjectId;
   readonly authorID: Schema.Types.ObjectId;
   readonly imageUrl: string;
+  readonly title: string;
   readonly breedId: string;
   readonly body: string;
   readonly comments: number;
