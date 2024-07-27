@@ -12,5 +12,8 @@ export class EditPostPayload {
   body?: string;
 
   @ApiProperty()
+  breedId?: string;
+
+  @ApiProperty()
   imageUrl?: string;
 }
