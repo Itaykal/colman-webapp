@@ -7,13 +7,12 @@ import UploadImage from '../components/uploadImage/uploadImage';
 import { useEffect, useState } from 'react';
 import useSessionToken from '../hooks/useSessionToken';
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
-
+File
 export default function RegisterPage() {
   const loginWithGoogle = useGoogleLogin({
     redirect_uri: "/api/auth/google/redirect"
   });
-  const [profilePicture, setProfilePicture] = useState<FileType>()
+  const [profilePicture, setProfilePicture] = useState<File>()
   const [username, setUsername] = useState<string>()
   const [password, setPassword] = useState<string>()
   const [email, setEmail] = useState<string>()

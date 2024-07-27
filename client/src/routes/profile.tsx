@@ -8,12 +8,15 @@ import Meta from "antd/es/card/Meta";
 import { useCallback, useEffect, useState } from "react";
 import * as postsService from "../services/postsService"
 import * as userService from "../services/userService"
+import CreatePostButton from "../components/createPostButton/createPostButton";
+import useUserSyncing from "../hooks/useUserSyncing";
 
 
 export default function Profile() {
   const { userId } = useLoaderData() as { userId: string };
   const [posts, setPosts] = useState<PostModel[] | null>(null)
   const [user, setUser] = useState<UserModel>()
+  const { user: loggedUser } = useUserSyncing()
 
   const fetchData = useCallback(async () => {
     if (!userId) {
@@ -46,6 +49,7 @@ export default function Profile() {
             />
           </Card>
           <PostsList posts={posts} />
+          {loggedUser?._id == user._id && <CreatePostButton refreshPosts={fetchData} />}
         </div>
       }
     </ >

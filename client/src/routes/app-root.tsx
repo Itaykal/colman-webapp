@@ -16,27 +16,36 @@ type MenuItem = {
 export default function AppRoot() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useUserSyncing();
+  const { user, logout } = useUserSyncing();
 
   const { token } = useSessionToken()
+  const logoutNavigate = () => {
+    logout()
+    navigate("/login")
+  }
+
   useEffect(() => {
     if ( !token ) {
       navigate("/login")
     }
-  })
+  }, [token])
   
 
   const items: MenuItem[] = useMemo(() => [
     {
       key: 'user',
-      label: <><Avatar src={user?.avatar} /> {user?.username}</>
+      label: <><Avatar src={user?.avatar} /> {user?.username}</>, path: `/profile/${user?._id}`
+
     },
     {
       label: 'Home',
       key: 'home',
       path: '/'
     },
-    { label: 'Profile', key: 'profile', path: `/profile/${user?._id}` },
+    {
+      label: <div onClick={logoutNavigate}>Logout</div>,
+      key: 'logout'
+    }
   ], [user])
 
 

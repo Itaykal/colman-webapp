@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import User from "../models/user";
 
 export interface Token {
-    accessToken: string,
+    token: string,
     refreshToken: string
 }
 
@@ -30,25 +30,26 @@ const deleteSessionToken = () => {
 }
 
 const useSessionToken = () => {
-    const [token, setToken] = useState<Token | null>(() => {
+    const [token, setToken_] = useState<Token | null>(() => {
         const initialValue = getSessionToken();
         return initialValue || null;
     });
 
-    useEffect(() => {
-        if (token) {
-            apiClient.defaults.headers.common["Authorization"] = "Bearer " + token.accessToken;
-            setSessionToken(token)
+    const setToken = (value: Token | null) => {
+        setToken_(value)
+        if (value) {
+            apiClient.defaults.headers.common["Authorization"] = "Bearer " + value.token;
+            setSessionToken(value)
         } else {
             delete apiClient.defaults.headers.common["Authorization"];
             deleteSessionToken()
         }
-    }, [token]);
+    }
 
     const decodedToken: JwtPayload | null = useMemo(() => {
-        if (!token?.accessToken) return null
-        return jwtDecode<JwtPayload>(token.accessToken)
-    }, [token?.accessToken])
+        if (!token?.token) return null
+        return jwtDecode<JwtPayload>(token.token)
+    }, [token?.token])
 
     return { token, setToken, decodedToken };
 };

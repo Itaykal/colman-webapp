@@ -5,6 +5,7 @@ import DoggoLogo from '../assets/doggo.jpg'
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import useSessionToken from '../hooks/useSessionToken';
+import * as userService from '../services/userService'
 
 export default function LoginPage() {
   const loginWithGoogle = useGoogleLogin({
@@ -19,23 +20,25 @@ export default function LoginPage() {
     }
   })
 
-  const [username, setUsername] = useState<string>()
-  const [password, setPassword] = useState<string>()
-  const login = () => {
-    setToken({
-      accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmEzOWI1NWM4MjgyZTY0ZWRiMWYzZjEiLCJ1c2VybmFtZSI6IkthbGZvbktpbmciLCJlbWFpbCI6Iml5a2FsZm9uQGdtYWlsLmNvbSIsImF2YXRhciI6Ii9wdWJsaWMvZTRhMTJkYjc1YWQ5Yjg2MTM0YjBkNTcxMDAyMTBhNjkyNi5wbmciLCJpYXQiOjE3MjIxMDI3MDAsImV4cCI6MTcyMjEwNDUwMH0.p4z3EWxk7w_SIMnzTmJn8rV5RUh3MUgzpwhIBRmXF1s",
-      refreshToken: ""
-    })
-    console.log(username, password)
-  }
+  const [username, setUsername] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
 
+  const login = async () => {
+    const token = await userService.login(username, password)
+    setToken(token)
+  }
+  const handleKeyDown = async (event: any) => {
+    if (event.key === 'Enter') {
+      await login()
+    }
+  }
   return (
     <div className='login-wrapper'>
       <div className='login-modal'>
         <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
           <Image className='logo-image' src={DoggoLogo} preview={false} />
-          <Input placeholder='username' onChange={e => { setUsername(e.target.value) }} />
-          <Input placeholder='password' type='password' onChange={e => { setPassword(e.target.value) }} />
+          <Input placeholder='username' onChange={e => { setUsername(e.target.value) }} onKeyDown={handleKeyDown} />
+          <Input placeholder='password' type='password' onChange={e => { setPassword(e.target.value) }} onKeyDown={handleKeyDown}/>
           <Row className='buttons-row'>
             <Button onClick={() => loginWithGoogle()}>Sign in with Google 🚀</Button>;
             <Button onClick={() => login()}>Sign in</Button>;

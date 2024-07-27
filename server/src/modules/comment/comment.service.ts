@@ -19,7 +19,7 @@ export class CommentService {
   ) {}
 
   getByPostID(id: string): Promise<Array<IComment>> {
-    return this.commentModel.find({ postId: id }).exec();
+    return this.commentModel.find({ postId: id }).sort({'date': -1}).exec();
   }
 
   async create(payload: PostCommentPayload, uid: string): Promise<IComment> {

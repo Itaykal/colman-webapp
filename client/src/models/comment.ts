@@ -1,4 +1,4 @@
 export default interface Comment {
     body: string,
-    authorId: string,
+    authorID: string,
 }

@@ -1,11 +1,10 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { GetProp, Upload, UploadProps, Image, Space } from "antd"
-import { useState } from "react";
+import { GetProp, Upload, UploadProps, Image, Space, UploadFile } from "antd"
+import { useEffect, useMemo, useState } from "react";
 import "./uploadImage.scss"
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
+File
+const getBase64 = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -14,9 +13,9 @@ const getBase64 = (file: FileType): Promise<string> =>
     });
 
 export default function UploadImage(
-    { onSelect, style, uploadText }: { onSelect: (file: FileType) => void, style: React.CSSProperties, uploadText?: string }
+    { onSelect, style, uploadText }: { onSelect: (file: File) => void, style: React.CSSProperties, uploadText?: string }
 ) {
-    const handlePreview = async (file: FileType) => {
+    const handlePreview = async (file: File) => {
         const b64File = await getBase64(file);
         setPreviewImage(b64File);
     };
@@ -45,15 +44,15 @@ export default function UploadImage(
             >
                 {uploadButton}
             </Upload>
-            {
-                previewImage && (
-                    <Image
-                    width={102}
-                    height={102}
-                        src={previewImage}
-                    />
-                )
-            }</Space>
+                {
+                    previewImage && (
+                        <Image
+                            width={102}
+                            height={102}
+                            src={previewImage}
+                        />
+                    )
+                }</Space>
         </>
     )
 }

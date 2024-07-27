@@ -4,17 +4,17 @@ import { useState } from "react";
 import CreatePostModal from "../createPostModal/createPostModel";
 import * as postsService from "../../services/postsService"
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
-
-export default function CreatePostButton() {
+File
+export default function CreatePostButton({ refreshPosts }: { refreshPosts: () => void}) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const showModal = () => {
         setIsModalOpen(true);
     };
 
-    const handleOk = async (file: FileType, title: string, description: string, dogBreedID: string) => {
-        await postsService.createPost(file, title, description, dogBreedID);
+    const handleOk = async (file: File, title: string, body: string, dogBreedID: string) => {
+        await postsService.createPost(file, title, body, dogBreedID);
+        refreshPosts()
         setIsModalOpen(false);
     };
 
