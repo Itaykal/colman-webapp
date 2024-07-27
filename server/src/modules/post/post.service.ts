@@ -46,7 +46,6 @@ export class PostService {
   async create(payload: PostPostPayload, uid: string): Promise<IPost> {
     const createdPost = new this.postmodel({
       ...payload,
-      imageUrl: "",
       authorID: uid,
       date: new Date(),
       comments: 0,
