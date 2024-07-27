@@ -96,7 +96,7 @@ export class AuthController {
       profileImage.data.pipe(fs.createWriteStream(`./public/avatar/${avatarUID}.${fileExtension}`));
       
       const avatarURL = `${this.configService.get("APP_URL")}:${this.configService.get("APP_PORT")}/public/avatar/${avatarUID}.${fileExtension}`;
-      await this.profileService.edit({...userPayload, avatar: avatarURL});
+      await this.profileService.edit({...userPayload, avatar: avatarURL}, user._id as unknown as string);
 
       token = await this.authService.createToken(user);
     } catch (e) {

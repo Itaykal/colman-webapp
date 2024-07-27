@@ -5,40 +5,33 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
+  Post,
+  Req,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ACGuard, UseRoles } from "nest-access-control";
 import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ProfileService, IGenericMessageBody } from "./profile.service";
-import { PatchProfilePayload } from "./payload/patch.profile.payload";
+import { EditProfilePayload } from "./payload/edit.profile.payload";
 import { IProfile } from "./profile.model";
+import { FileInterceptor } from "@nestjs/platform-express";
+import * as multer from "multer";
+import { extname } from "path";
 
-/**
- * Profile Controller
- */
 @ApiBearerAuth()
 @ApiTags("profile")
 @Controller("api/profile")
 export class ProfileController {
-  /**
-   * Constructor
-   * @param profileService
-   */
   constructor(private readonly profileService: ProfileService) {}
 
-  /**
-   * Retrieves a particular profile
-   * @param username the profile given username to fetch
-   * @returns {Promise<IProfile>} queried profile data
-   */
-  @Get(":username")
+  @Get(":userId")
   @UseGuards(AuthGuard("jwt"))
   @ApiResponse({ status: 200, description: "Fetch Profile Request Received" })
   @ApiResponse({ status: 400, description: "Fetch Profile Request Failed" })
-  async getProfile(@Param("username") username: string): Promise<IProfile> {
-    const profile = await this.profileService.getByUsername(username);
+  async getProfile(@Param("userId") userId: string): Promise<IProfile> {
+    const profile = await this.profileService.get(userId);
     if (!profile) {
       throw new BadRequestException(
         "The profile with that username could not be found.",
@@ -52,7 +45,7 @@ export class ProfileController {
    * @param {RegisterPayload} payload
    * @returns {Promise<IProfile>} mutated profile data
    */
-  @Patch()
+  @Post("edit")
   @UseGuards(AuthGuard("jwt"))
   @UseRoles({
     resource: "profiles",
@@ -61,7 +54,31 @@ export class ProfileController {
   })
   @ApiResponse({ status: 200, description: "Patch Profile Request Received" })
   @ApiResponse({ status: 400, description: "Patch Profile Request Failed" })
-  async patchProfile(@Body() payload: PatchProfilePayload) {
-    return await this.profileService.edit(payload);
+  async patchProfile(
+    @Body() payload: EditProfilePayload,
+    @Param("userId") userId: string,
+    @Req() req,
+  ) {
+    const uid = req.user.id;
+    return await this.profileService.edit(payload, uid);
+  }
+
+  @UseInterceptors(
+    FileInterceptor("file", {
+      storage: multer.diskStorage({
+        destination: "./public/avatar",
+        filename: (req, file, cb) => {
+          const filename = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join("");
+          cb(null, filename + extname(file.originalname));
+        },
+      }),
+    }),
+  )
+  @Post("/upload-file")
+  async uploadFile(@Req() req): Promise<string> {
+    return req.file.filename;
   }
 }

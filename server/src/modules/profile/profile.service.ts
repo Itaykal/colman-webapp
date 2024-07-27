@@ -10,7 +10,7 @@ import {
 import { IProfile } from "./profile.model";
 import { RegisterPayload } from "../auth/payload/register.payload";
 import { AppRoles } from "../app/app.roles";
-import { PatchProfilePayload } from "./payload/patch.profile.payload";
+import { EditProfilePayload } from "./payload/edit.profile.payload";
 import { CustomError } from 'ts-custom-error'
 
 
@@ -123,18 +123,22 @@ export class ProfileService {
    * @param {PatchProfilePayload} payload
    * @returns {Promise<IProfile>} mutated profile data
    */
-  async edit(payload: PatchProfilePayload): Promise<IProfile> {
-    const { username } = payload;
-    const updatedProfile = await this.profileModel.updateOne(
-      { username },
-      payload,
-    );
-    if (updatedProfile.modifiedCount !== 1) {
-      throw new BadRequestException(
-        "The profile with that username does not exist in the system. Please try another username.",
+  async edit(payload: EditProfilePayload, uid: string): Promise<IProfile> {
+    const doesUserAlreadyExist = await this.getByUsername(payload.username);
+    if (doesUserAlreadyExist) {
+      throw new NotAcceptableException(
+        "The account with the provided username currently exists. Please choose another one.",
       );
     }
-    return this.getByUsername(username);
+    const updatedProfile = await this.profileModel.findOneAndUpdate({ _id: uid }, payload, {
+      new: true,
+    }).exec();
+    if (!updatedProfile) {
+      throw new BadRequestException(
+        "User not found",
+      );
+    }
+    return this.get(uid);
   }
 
   /**
