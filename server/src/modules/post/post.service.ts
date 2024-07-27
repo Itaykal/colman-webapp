@@ -30,11 +30,11 @@ export class PostService {
   }
 
   getAll(): Promise<Array<IPost>> {
-    return this.postmodel.find().exec();
+    return this.postmodel.find().sort({'date': -1}).exec();
   }
 
   getByUser(id: string): Promise<Array<IPost>> {
-    return this.postmodel.find({ authorID: id }).exec();
+    return this.postmodel.find({ authorID: id }).sort({'date': -1}).exec();
   }
 
   incrementComments(id: string): Promise<IPost> {
@@ -51,6 +51,14 @@ export class PostService {
       comments: 0,
     });
     return createdPost.save();
+  }
+
+  async delete(id: string): Promise<IGenericMessageBody> {
+    const post = await this.postmodel.findByIdAndDelete(id).exec();
+    if (!post) {
+      throw new NotAcceptableException("Post not found");
+    }
+    return { message: "Post deleted" };
   }
   
   async edit(payload: EditPostPayload, id: string): Promise<IPost> {

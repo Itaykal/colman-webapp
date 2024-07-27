@@ -8,6 +8,7 @@ import { useLoaderData } from 'react-router-dom';
 import Comment from '../models/comment';
 import "../styles/post-page.scss"
 import CommentsList from '../components/commentsList/commentsList';
+import CreateCommentButton from '../components/createCommentButton/createCommentButton';
 
 
 export default function PostPage() {
@@ -34,6 +35,7 @@ export default function PostPage() {
                     >
                         <CommentsList comments={comments}></CommentsList>
                     </div>
+                    <CreateCommentButton refreshComments={fetchPost} postId={post._id} />
                 </div>
             }
         </>

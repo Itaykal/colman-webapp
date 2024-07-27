@@ -80,8 +80,8 @@ export class AuthController {
       const userPayload = {
         email: googleUser.user.email as string,
         username: googleUser.user.email.split("@")[0] as string,
-        name: (googleUser.user.firstName + " " + googleUser.user.lastName) as string,
         password: uuidv4(),
+        avatar: "",
       }
       const user = await this.profileService.create(userPayload);
       

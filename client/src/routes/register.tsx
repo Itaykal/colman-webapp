@@ -1,33 +1,36 @@
 import { useGoogleLogin } from '@react-oauth/google';
-import { Button, Input, Row, Space, Image, GetProp, UploadProps } from 'antd';
+import { Button, Input, Row, Space, Image } from 'antd';
 import '../styles/login.scss'
 import DoggoLogo from '../assets/doggo.jpg'
 import { Link, useNavigate } from 'react-router-dom';
 import UploadImage from '../components/uploadImage/uploadImage';
 import { useEffect, useState } from 'react';
 import useSessionToken from '../hooks/useSessionToken';
+import * as userService from "../services/userService"
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
-
+File
 export default function RegisterPage() {
   const loginWithGoogle = useGoogleLogin({
     redirect_uri: "/api/auth/google/redirect"
   });
-  const [profilePicture, setProfilePicture] = useState<FileType>()
-  const [username, setUsername] = useState<string>()
-  const [password, setPassword] = useState<string>()
-  const [email, setEmail] = useState<string>()
-  const register = () => {
-    console.log(username, password, profilePicture)
-  }
+  const [profilePicture, setProfilePicture] = useState<File>()
+  const [username, setUsername] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [email, setEmail] = useState<string>("")
   const navigate = useNavigate()
 
-  const { token } = useSessionToken()
+  const { setToken, token } = useSessionToken()
   useEffect(() => {
     if (token) {
       navigate("/")
     }
   })
+
+  const register = async () => {
+    const newToken = await userService.register(username, password, email, profilePicture!)
+    setToken(newToken)
+  }
+
 
   return (
     <div className='login-wrapper'>
@@ -44,7 +47,7 @@ export default function RegisterPage() {
           ></UploadImage>
           <Row className='buttons-row'>
             <Button onClick={() => loginWithGoogle()}>Sign in with Google 🚀</Button>;
-            <Button onClick={() => register()}>Register</Button>;
+            <Button disabled={email.length == 0 || username.length == 0 || password.length == 0 || !profilePicture} onClick={() => register()}>Register</Button>;
           </Row>
           <Row className='links-row'>
             <Link to="/login">login</Link>

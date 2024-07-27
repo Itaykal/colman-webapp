@@ -1,0 +1,28 @@
+.modal-content-wrapper {
+    justify-content: center;
+    display: flex;
+
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        align-items: center;
+        justify-content: center;
+
+        .upload-button {
+            color: white !important;
+
+
+        }
+
+        .input {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+    }
+}
+
+.ant-btn-primary:disabled {
+    color: rgba(256, 256, 256, 0.25) !important;
+    border-color: rgba(256, 256, 256, 0.25) !important; 
+}

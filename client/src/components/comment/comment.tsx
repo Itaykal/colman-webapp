@@ -11,9 +11,9 @@ export default function Comment({ comment, }: { comment: CommentModel, }) {
     const [author, setAuthor] = useState<User>();
 
     const fetchData = useCallback(async () => {
-        const newAuthor = await userService.getUser(comment.authorId);
+        const newAuthor = await userService.getUser(comment.authorID);
         setAuthor(newAuthor)
-    }, [comment.authorId])
+    }, [comment.authorID])
 
     useEffect(() => { fetchData() }, [fetchData])
     return (

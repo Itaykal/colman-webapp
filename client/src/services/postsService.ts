@@ -1,9 +1,7 @@
 import Post from "../models/post";
 import Comment from "../models/comment";
 import apiClient from "./apiClient";
-import { GetProp, UploadProps } from "antd";
-
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+import * as fileService from "./fileService"
 
 export const getPosts = async (userId?: string): Promise<Post[]> => {
     let q = ""
@@ -14,15 +12,23 @@ export const getPosts = async (userId?: string): Promise<Post[]> => {
     return response.data;
 }
 
-export const createPost = async (file: FileType, title: string, description: string, dogBreedID: string): Promise<Post> => {
-    var formData = new FormData();
-    formData.append('file', file)
-    const imageResponse = await apiClient.post(`/api/post/upload-file`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    });
-    const imageUrl = imageResponse.data.imageUrl
+export const createPost = async (file: File, title: string, body: string, dogBreedID: string): Promise<Post> => {
+    const imageUrl = await fileService.uploadFile(file)
+    const postResponse = await apiClient.post(`/api/post`, {
+        title: title,
+        breedId: dogBreedID,
+        body: body,
+        imageUrl: imageUrl,
+    })
+    return postResponse.data as Post
+}
+
+export const createComment = async (postId: string, body: string): Promise<Comment> => {
+    const commentResponse = await apiClient.post(`/api/comment`, {
+        body: body,
+        postId: postId,
+    })
+    return commentResponse.data as Comment
 }
 
 export const getPost = async (postId: string): Promise<Post> => {
