@@ -1,6 +1,6 @@
 # compiled output
-/dist
-/node_modules
+dist
+node_modules
 
 # logs
 logs
@@ -19,18 +19,19 @@ yarn-error.log
 
 # environment
 .env
+.env.local
 
 # build
-/dist
+dist
 
 # tests
-/test
-/coverage
-/.nyc_output
+test
+coverage
+.nyc_output
 build/config\.gypi
 
 # IDEs and editors
-/.idea
+.idea
 .project
 .classpath
 .c9/
