@@ -13,7 +13,7 @@ import User from "../../models/user";
 import useUserSyncing from "../../hooks/useUserSyncing";
 import CreatePostModal from "../createPostModal/createPostModel";
 
-export default function Post({ post, refreshPosts}: { post: PostModel, refreshPosts: () => void}) {
+export default function Post({ post, refreshPosts }: { post: PostModel, refreshPosts: () => void }) {
     const navigate = useNavigate()
     const [breed, setBreed] = useState<Breed>()
     const [author, setAuthor] = useState<User>()
@@ -52,30 +52,30 @@ export default function Post({ post, refreshPosts}: { post: PostModel, refreshPo
             <Meta
                 title={<>
                     <Flex justify="space-between">
-                        <span style={{ fontWeight: 500 }}>{post.title}</span>
-                        <span>{
-                            user?._id == author?._id && <EditOutlined onClick={() => setModalVisible(true)}/> 
+                        <span style={{ fontWeight: 500, maxWidth: " 85%", textOverflow: "ellipsis", overflow: "hidden" }}>{post.title}</span>
+                        <span style={{ zIndex: 100 }}>{
+                            user?._id == author?._id && <EditOutlined onClick={() => setModalVisible(true)} />
                         }
-                        {
-                            user?._id == author?._id && <DeleteOutlined onClick={() => {
-                                postsService.deletePost(post._id)
-                                refreshPosts()
-                            }}/>
-                        }</span>
+                            {
+                                user?._id == author?._id && <DeleteOutlined onClick={() => {
+                                    postsService.deletePost(post._id)
+                                    refreshPosts()
+                                }} />
+                            }</span>
                         {
                             modalVisible && <CreatePostModal
-                            allowEmptyFile={true}
-                            handleOk={handleModalOk}
-                            handleCancel={() => setModalVisible(false)}
-                            isModalOpen={modalVisible}
-                            initialPost={post}
-                            initialBreed={breed?.attributes.name}
-                        />
+                                allowEmptyFile={true}
+                                handleOk={handleModalOk}
+                                handleCancel={() => setModalVisible(false)}
+                                isModalOpen={modalVisible}
+                                initialPost={post}
+                                initialBreed={breed?.attributes.name}
+                            />
                         }
                     </Flex>
                     <Flex justify="space-between">
                         <Link to={`/breed/${post.breedId}`}>{breed?.attributes.name}</Link>
-                        <span>{post.comments}<CommentOutlined style={{marginLeft: "2px"}} /></span>
+                        <span>{post.comments}<CommentOutlined style={{ marginLeft: "2px" }} /></span>
                     </Flex >
                 </>}
                 description={post.body}
