@@ -12,15 +12,12 @@ export const SWAGGER_API_DESCRIPTION = 'API Description';
 
 async function bootstrap() {
   var app;
-  if (process.env.NODE_ENV === 'production') {
-    const httpsOptions = {
-      key: fs.readFileSync(path.join(__dirname, "..", "secrets", "server.key")),
-      cert: fs.readFileSync(path.join(__dirname, "..", "secrets", "server.crt")),
-    };
-    app = await NestFactory.create(AppModule, {httpsOptions});
-  } else {
-    app = await NestFactory.create(AppModule);
-  }
+  const httpsOptions = {
+    key: fs.readFileSync(path.join(__dirname, "..", "secrets", "server.key")),
+    cert: fs.readFileSync(path.join(__dirname, "..", "secrets", "server.crt")),
+  };
+  app = await NestFactory.create(AppModule, {httpsOptions});
+ 
   app.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
