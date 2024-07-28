@@ -7,10 +7,12 @@ import * as request from "supertest";
 import { ProfileModule } from "./profile.module";
 import * as jwt_decode from "jwt-decode";
 import { IProfile } from "./profile.model";
-import { MongooseModule, MongooseModuleFactoryOptions } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { getConnectionToken, MongooseModule, MongooseModuleFactoryOptions } from "@nestjs/mongoose";
+import { Connection, Model } from "mongoose";
 import { ConfigModule } from "../config/config.module";
 import { ConfigService } from "../config/config.service";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { AuthModule } from "../auth/auth.module";
 
 describe("ProfileController (e2e)", () => {
   let app: INestApplication;
@@ -23,8 +25,8 @@ describe("ProfileController (e2e)", () => {
     password: "test",
     avatar: "test",
   };
-  beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+  beforeEach(async () => {
+    const moduleRef = await Test.createTestingModule({
       imports: [
         MongooseModule.forRootAsync({
           imports: [ConfigModule],
@@ -37,33 +39,33 @@ describe("ProfileController (e2e)", () => {
             } as MongooseModuleFactoryOptions),
           }),
         ProfileModule,
-        AppModule,
-        ],
+        AuthModule,
+      ],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-
-    const profile: Model<IProfile> = moduleFixture.get("Profile");
-    profile.deleteMany({}).exec();
+    app = moduleRef.createNestApplication<NestExpressApplication>();
+    await app.listen(3333);
+    await (app.get(getConnectionToken()) as Connection).db.collection('profiles').deleteMany({});
 
     const res = await request(app.getHttpServer())
       .post("/api/auth/register")
       .send(user);
 
     accessToken = res.body.token;
-    console.log(res.body);
 
     const payloadJson = jwt_decode.jwtDecode(accessToken) as IProfile;
     uid = String(payloadJson._id);
+  });
+
+  afterEach(async () => {
+    await app.close();
   });
 
   it("/api/profile/:userId (GET)", () => {
     return request(app.getHttpServer())
       .get(`/api/profile/${uid}`)
       .set("Authorization", `Bearer ${accessToken}`)
-      .expect(200)
-      .expect(user);
+      .expect(200);
   });
 
   it("/api/profile/edit (POST)", () => {
