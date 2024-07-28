@@ -31,7 +31,7 @@ async function bootstrap() {
   app.enableCors();
   app.use(morgan('combined'));
 
-  await app.listen(process.env.APP_PORT || 9000);
+  await app.listen(process.env.APP_PORT || 443);
 }
 
 bootstrap();
