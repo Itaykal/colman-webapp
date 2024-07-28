@@ -10,14 +10,11 @@ import { IProfile } from "./profile.model";
 import { RegisterPayload } from "../auth/payload/register.payload";
 import { AppRoles } from "../app/app.roles";
 import { EditProfilePayload } from "./payload/edit.profile.payload";
-import { CustomError } from 'ts-custom-error'
-
+import { CustomError } from "ts-custom-error";
 
 export class UserAlreadyExists extends CustomError {
-  public constructor(
-      message?: string,
-  ) {
-      super(message)
+  public constructor(message?: string) {
+    super(message);
   }
 }
 
@@ -73,13 +70,13 @@ export class ProfileService {
       })
       .exec();
   }
-  
+
   getByEmail(email: string): Promise<IProfile> {
     return this.profileModel
-    .findOne({
-      email: email
-    })
-    .exec();
+      .findOne({
+        email: email,
+      })
+      .exec();
   }
 
   /**
@@ -120,17 +117,19 @@ export class ProfileService {
   async edit(payload: EditProfilePayload, uid: string): Promise<IProfile> {
     const doesUserAlreadyExist = await this.getByUsername(payload.username);
     if (doesUserAlreadyExist) {
-      throw new NotAcceptableException(
-        "The account with the provided username currently exists. Please choose another one.",
-      );
+      if (String(doesUserAlreadyExist._id) !== uid) {
+        throw new NotAcceptableException(
+          "The account with the provided username currently exists. Please choose another one.",
+        );
+      }
     }
-    const updatedProfile = await this.profileModel.findOneAndUpdate({ _id: uid }, payload, {
-      new: true,
-    }).exec();
+    const updatedProfile = await this.profileModel
+      .findOneAndUpdate({ _id: uid }, payload, {
+        new: true,
+      })
+      .exec();
     if (!updatedProfile) {
-      throw new BadRequestException(
-        "User not found",
-      );
+      throw new BadRequestException("User not found");
     }
     return this.get(uid);
   }
@@ -141,7 +140,7 @@ export class ProfileService {
    * @returns {Promise<IGenericMessageBody>} whether or not the crud operation was completed
    */
   delete(username: string): Promise<IGenericMessageBody> {
-    return this.profileModel.deleteOne({ username }).then(profile => {
+    return this.profileModel.deleteOne({ username }).then((profile) => {
       if (profile.deletedCount === 1) {
         return { message: `Deleted ${username} from records` };
       } else {
