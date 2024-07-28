@@ -7,7 +7,7 @@ process.env.TEST
   providers: [
     {
       provide: ConfigService,
-      useValue: process.env.TEST === "1" ? new ConfigService(".env.test"): new ConfigService(".env"),
+      useValue: process.env.NODE_ENV === "test" ? new ConfigService(".env.test"): new ConfigService(".env"),
     },
   ],
   exports: [ConfigService],

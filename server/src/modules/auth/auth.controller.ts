@@ -71,44 +71,6 @@ export class AuthController {
     return await this.authService.createToken(user);
   }
 
-  
-  // async googleAuthRedirect(@Req() req) {
-  //   var token = null;
-  //   try {
-  //     const googleUser = this.authService.googleLogin(req);
-  
-  //     const userPayload = {
-  //       email: googleUser.user.email as string,
-  //       username: googleUser.user.email.split("@")[0] as string,
-  //       password: uuidv4(),
-  //       avatar: "",
-  //     }
-  //     const user = await this.profileService.create(userPayload);
-      
-  //     const profileImage = await axios.get(googleUser.user.picture, {
-  //       responseType: "stream",
-  //     });
-      
-  //     const contentType = profileImage.headers['content-type'];
-  //     const fileExtension = MimeImageTypes[contentType];
-      
-  //     const avatarUID = uuidv4();
-  //     profileImage.data.pipe(fs.createWriteStream(`./public/avatar/${avatarUID}.${fileExtension}`));
-      
-  //     const avatarURL = `${this.configService.get("APP_URL")}:${this.configService.get("APP_PORT")}/public/avatar/${avatarUID}.${fileExtension}`;
-  //     await this.profileService.edit({...userPayload, avatar: avatarURL}, user._id as unknown as string);
-
-  //     token = await this.authService.createToken(user);
-  //   } catch (e) {
-  //     if (e instanceof UserAlreadyExists) {
-  //       token = await this.authService.createToken(await this.profileService.getByEmail(req.user.email));
-  //     } else {
-  //       throw e
-  //     }
-  //   }
-  //   return token;
-  // }
-
   @Post("google")
   async googleAuth(@Body() payload: GoogleAuthPayload) {
     var accessToken = null;

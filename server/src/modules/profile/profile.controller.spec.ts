@@ -1,46 +1,84 @@
-import { describe, jest, beforeEach, expect, it } from "@jest/globals";
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import { Types } from "mongoose";
-import { AppModule } from "../app/app.module";
-import request from "supertest";
+// FILEPATH: /home/itay/projects/colman-webapp/server/src/modules/profile/profile.controller.spec.ts
 
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication } from "@nestjs/common";
+import AppModule from "../app/app.module";
+import * as request from "supertest";
+import { ProfileModule } from "./profile.module";
+import * as jwt_decode from "jwt-decode";
+import { IProfile } from "./profile.model";
+import { MongooseModule, MongooseModuleFactoryOptions } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { ConfigModule } from "../config/config.module";
+import { ConfigService } from "../config/config.service";
 
-describe('ProfileController', () => {
+describe("ProfileController (e2e)", () => {
   let app: INestApplication;
+  let accessToken: string;
+  let uid: string;
 
-  beforeEach(async () => {
+  const user = {
+    username: "test",
+    email: "test@gmail.com",
+    password: "test",
+    avatar: "test",
+  };
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [
+        MongooseModule.forRootAsync({
+          imports: [ConfigModule],
+          inject: [ConfigService],
+          useFactory: async (configService: ConfigService) =>
+            ({
+              uri: configService.get("DB_URL"),
+              useNewUrlParser: true,
+              useUnifiedTopology: true,
+            } as MongooseModuleFactoryOptions),
+          }),
+        ProfileModule,
+        AppModule,
+        ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
-  })
-  const expectedProfileID: Types.ObjectId = new Types.ObjectId("66a50ada70edde38cfa85455")
 
-  describe('getProfile', () => {
-    it('should return a profile', () => {
-      return request(app.getHttpServer())
-        .get('/api/profile/test')
-        .expect(200)
-        .expect(({ body }) => {
-          expect(body).toHaveProperty("_id", expectedProfileID);
-        });
-    });
+    const profile: Model<IProfile> = moduleFixture.get("Profile");
+    profile.deleteMany({}).exec();
 
-    it('should throw a BadRequestException if the profile is not found', () => {
-      return request(app.getHttpServer())
-        .get('/api/profile/notexistinguser')
-        .expect(400)
-    });
+    const res = await request(app.getHttpServer())
+      .post("/api/auth/register")
+      .send(user);
+
+    accessToken = res.body.token;
+    console.log(res.body);
+
+    const payloadJson = jwt_decode.jwtDecode(accessToken) as IProfile;
+    uid = String(payloadJson._id);
   });
 
-  // describe('patchProfile', () => {
-  //   it('should update the profile and return it', async () => {
-  //     const result = await controller.patchProfile({ username: 'testuser', email: 'test@example.com' });
-  //     expect(result).toEqual(mockProfile);
-  //     expect(service.edit).toHaveBeenCalledWith({ username: 'testuser', name: 'Updated User' });
-  //   });
-  // });
+  it("/api/profile/:userId (GET)", () => {
+    return request(app.getHttpServer())
+      .get(`/api/profile/${uid}`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .expect(200)
+      .expect(user);
+  });
+
+  it("/api/profile/edit (POST)", () => {
+    const editProfilePayload = { username: "updatedtest" };
+    return request(app.getHttpServer())
+      .post("/api/profile/edit")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send(editProfilePayload)
+      .expect(201)
+      .expect((res) => {
+        expect(res.body.username).toEqual("updatedtest");
+      });
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
 });
